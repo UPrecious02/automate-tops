@@ -2,6 +2,13 @@
 import Icon from '../Icon.astro';
 import { site, socialLinks } from '../../data/site';
 
+interface Props {
+  /** Use 'h1' when the contact section is the main content of the page. */
+  headingLevel?: 'h1' | 'h2';
+}
+const { headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+
 const fields = [
   { id: 'name', label: 'Your name', type: 'text' as const, autocomplete: 'name', required: true },
   { id: 'email', label: 'Email address', type: 'email' as const, autocomplete: 'email', required: true },
@@ -9,12 +16,12 @@ const fields = [
 ];
 ---
 
-<section id="contact" class="canvas-bg border-t border-line bg-ink" aria-labelledby="contact-title">
+<section id="contact" class:list={['canvas-bg bg-ink', headingLevel === 'h2' && 'border-t border-line']} aria-labelledby="contact-title">
   <div class="container-x section-y">
     <div class="grid gap-14 lg:grid-cols-12 lg:gap-10">
       <div class="lg:col-span-6" data-reveal>
         <p class="label text-lime">Contact</p>
-        <h2 id="contact-title" class="display display-lg mt-4">Let's make the workflow work better.</h2>
+        <Heading id="contact-title" class="display display-lg mt-4">Let's make the workflow work better.</Heading>
         <p class="lead mt-6 max-w-lg text-paper/75">
           Have a repetitive process, disconnected tools or an operational bottleneck worth solving? Let's discuss the system
           you need.

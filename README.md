@@ -26,14 +26,27 @@ npm run preview  # serve the production build locally
 
 The contact form only works on the deployed Netlify site. Locally it will show the error message, which is expected.
 
+## Pages
+
+| URL | What it shows | File |
+| :--- | :--- | :--- |
+| `/` | Hero, tool strip, three featured case studies, call to action | `src/pages/index.astro` |
+| `/work` | All case studies | `src/pages/work.astro` |
+| `/case-studies/...` | One page per case study | `src/pages/case-studies/[slug].astro` |
+| `/services` | What John builds, his process and his tools | `src/pages/services.astro` |
+| `/about` | Bio, portrait, credential and timeline | `src/pages/about.astro` |
+| `/contact` | Enquiry form and FAQ | `src/pages/contact.astro` |
+
+The homepage shows the first three case studies by `order`. Change the `order` numbers to choose which three appear.
+
 ## Where to edit things
 
 | What | File |
 | :--- | :--- |
 | Email, social links, portrait, certificate link | `src/data/site.ts` |
 | Case studies (one file each) | `src/content/case-studies/*.yaml` |
-| Homepage sections | `src/components/home/` |
-| Case study page template | `src/pages/case-studies/[slug].astro` |
+| Page sections | `src/components/` and `src/components/home/` |
+| Navigation and footer links | `src/components/Header.astro`, `src/components/Footer.astro` |
 | Colors and fonts | `src/styles/global.css` (the `@theme` block) |
 | Logo files | `public/brand/` |
 | Social sharing image | `public/og.png` |
@@ -65,7 +78,7 @@ evidence:
 
 ## Adding a new case study
 
-Copy any file in `src/content/case-studies/`, rename it (the file name becomes the URL), set `order`, and edit the content. The homepage card, case study page and sitemap entry are created automatically. If a required field is missing, the build stops and says which one.
+Copy any file in `src/content/case-studies/`, rename it (the file name becomes the URL), set `order`, and edit the content. The card on the Work page, the case study page and the sitemap entry are created automatically. If a required field is missing, the build stops and says which one.
 
 ## Before launch: confirm with John
 

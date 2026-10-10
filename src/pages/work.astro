@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import WorkList from '../components/WorkList.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<Base
+  title="Work | John Eyitope"
+  description="Case studies of automation workflows built by John Eyitope in n8n, from WhatsApp ordering and booking to email triage, follow up engines and lead research."
+>
+  <PageHeader
+    label="Work"
+    title="Real workflows, built and running."
+    lead="Each case study covers the problem, the architecture, screenshots from real runs, the decisions behind it and what John would improve next."
+  />
+  <WorkList headless />
+  <CtaBand />
+</Base>

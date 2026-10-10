@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Capabilities from '../components/home/Capabilities.astro';
+import Approach from '../components/home/Approach.astro';
+import TechStack from '../components/home/TechStack.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<Base
+  title="Services | John Eyitope"
+  description="Customer communication systems, business process automation and research workflows, built process first with n8n, AI and the tools a business already uses."
+>
+  <PageHeader
+    label="Services"
+    title="Systems with a job to do."
+    lead="Every build starts from a business process, not a tool. The goal is work that moves forward on its own, with people stepping in only where their judgement matters."
+  />
+  <Capabilities headless />
+  <Approach />
+  <TechStack />
+  <CtaBand />
+</Base>

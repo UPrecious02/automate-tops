@@ -1,0 +1,18 @@
+---
+/** Top of every inner page: small label, the page's h1 and an optional intro line. */
+interface Props {
+  label: string;
+  title: string;
+  lead?: string;
+}
+const { label, title, lead } = Astro.props;
+---
+
+<header class="canvas-bg border-b border-line">
+  <div class="container-x pt-12 pb-14 md:pt-20 md:pb-20">
+    <p class="label text-lime" data-reveal>{label}</p>
+    <h1 class="display display-xl mt-5 max-w-5xl" data-reveal style="--reveal-delay:60ms">{title}</h1>
+    {lead && <p class="lead mt-6 max-w-2xl text-paper/75" data-reveal style="--reveal-delay:120ms">{lead}</p>}
+    <slot />
+  </div>
+</header>

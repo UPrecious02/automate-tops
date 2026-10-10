@@ -3,6 +3,11 @@ import Icon from '../Icon.astro';
 import Portrait from '../Portrait.astro';
 import { site } from '../../data/site';
 
+interface Props {
+  headless?: boolean;
+}
+const { headless = false } = Astro.props;
+
 const timeline = [
   { when: '2024 onward', what: 'AI automation freelancing', detail: 'Designing and building workflows for business processes.' },
   { when: '2024 to 2025', what: 'UI/UX internship, Brainbench Academy', detail: 'User focused thinking that shapes how workflows are designed.' },
@@ -10,7 +15,7 @@ const timeline = [
 ];
 ---
 
-<section id="about" class="border-t border-line bg-ink" aria-labelledby="about-title">
+<section id="about" class:list={['bg-ink', !headless && 'border-t border-line']} aria-labelledby={headless ? undefined : 'about-title'} aria-label={headless ? 'About John' : undefined}>
   <div class="container-x section-y">
     <div class="grid gap-12 lg:grid-cols-12 lg:gap-14">
       <div class="lg:col-span-5" data-reveal>
@@ -44,12 +49,16 @@ const timeline = [
       </div>
 
       <div class="lg:col-span-7">
-        <div data-reveal>
-          <p class="label text-lime">About John</p>
-          <h2 id="about-title" class="display display-lg mt-4">A builder first. AI is one of the tools.</h2>
-        </div>
+        {
+          !headless && (
+            <div data-reveal>
+              <p class="label text-lime">About John</p>
+              <h2 id="about-title" class="display display-lg mt-4">A builder first. AI is one of the tools.</h2>
+            </div>
+          )
+        }
 
-        <div class="mt-8 max-w-2xl space-y-5 text-[1.075rem] leading-relaxed text-paper/80" data-reveal style="--reveal-delay:100ms">
+        <div class:list={['max-w-2xl space-y-5 text-[1.075rem] leading-relaxed text-paper/80', !headless && 'mt-8']} data-reveal style="--reveal-delay:100ms">
           <p>
             I'm John Eyitope, an AI Automation &amp; Workflow Specialist with a Computer Engineering background and hands on
             experience building automation workflows. My work focuses on connecting AI, business applications, APIs and

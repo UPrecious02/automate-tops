@@ -1,4 +1,9 @@
 ---
+interface Props {
+  headless?: boolean;
+}
+const { headless = false } = Astro.props;
+
 const capabilities = [
   {
     code: '01',
@@ -24,9 +29,9 @@ const capabilities = [
 ];
 ---
 
-<section id="capabilities" class="bg-ink" aria-labelledby="capabilities-title">
+<section id="capabilities" class="bg-ink" aria-labelledby={headless ? undefined : 'capabilities-title'} aria-label={headless ? 'What I build' : undefined}>
   <div class="container-x section-y">
-    <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+    {!headless && (<div class="grid gap-6 lg:grid-cols-12 lg:items-end">
       <div class="lg:col-span-7" data-reveal>
         <p class="label text-lime">What I build</p>
         <h2 id="capabilities-title" class="display display-lg mt-4">Systems with a job to do.</h2>
@@ -35,9 +40,9 @@ const capabilities = [
         Every build starts from a business process, not a tool. The goal is work that moves forward on its own, with people
         stepping in only where their judgement matters.
       </p>
-    </div>
+    </div>)}
 
-    <ol class="relative mt-14 grid gap-5 md:mt-20 lg:grid-cols-3 lg:gap-8">
+    <ol class:list={['relative grid gap-5 lg:grid-cols-3 lg:gap-8', !headless && 'mt-14 md:mt-20']}>
       <li class="pointer-events-none absolute inset-x-6 top-1/2 hidden h-px bg-line lg:block" aria-hidden="true"></li>
       {
         capabilities.map((item, i) => (

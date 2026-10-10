@@ -55,7 +55,7 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
           <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-mute">
             <li><a href="/" class="hover:text-lime">Home</a></li>
             <li aria-hidden="true">/</li>
-            <li><a href="/#work" class="hover:text-lime">Selected work</a></li>
+            <li><a href="/work" class="hover:text-lime">Work</a></li>
             <li aria-hidden="true">/</li>
             <li aria-current="page" class="text-paper/80">{data.title}</li>
           </ol>
@@ -277,8 +277,8 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
         <div class="mt-10 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <p class="max-w-md text-lg leading-relaxed text-paper/85">Have a process that still runs by hand?</p>
           <div class="flex flex-col gap-3 xs:flex-row">
-            <a href="/#contact" class="btn btn-lime">Discuss a project <Icon name="arrow-right" /></a>
-            <a href="/#work" class="btn btn-ghost"><Icon name="arrow-left" /> All work</a>
+            <a href="/contact" class="btn btn-lime">Discuss a project <Icon name="arrow-right" /></a>
+            <a href="/work" class="btn btn-ghost"><Icon name="arrow-left" /> All work</a>
           </div>
         </div>
       </div>

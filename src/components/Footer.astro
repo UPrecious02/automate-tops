@@ -3,6 +3,14 @@ import Logo from './Logo.astro';
 import { site, socialLinks } from '../data/site';
 
 const year = new Date().getFullYear();
+
+const pages = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/work' },
+  { label: 'Services', href: '/services' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
 ---
 
 <footer class="border-t border-line bg-ink">
@@ -15,6 +23,17 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="flex flex-col gap-6 md:items-end">
+      <nav aria-label="Footer">
+        <ul class="flex flex-wrap gap-x-6 gap-y-3">
+          {
+            pages.map((page) => (
+              <li>
+                <a href={page.href} class="text-sm font-medium text-paper/85 transition-colors hover:text-lime">{page.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <ul class="flex flex-wrap gap-x-6 gap-y-3">
         <li>
           <a href={`mailto:${site.email}`} class="label text-paper/80 transition-colors hover:text-lime">Email</a>

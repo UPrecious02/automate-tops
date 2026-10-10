@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Have a process that still runs by hand?',
+  text = "Tell me how it works today. I'll map where automation helps and where a person should stay in the loop.",
+} = Astro.props;
+---
+
+<section class="canvas-bg border-t border-line bg-ink" aria-labelledby="cta-title">
+  <div class="container-x py-16 md:py-24">
+    <div class="relative overflow-hidden rounded-[2rem] bg-lime p-8 text-ink sm:p-12 lg:flex lg:items-end lg:justify-between lg:gap-12 lg:p-16" data-reveal>
+      <div class="max-w-2xl">
+        <h2 id="cta-title" class="display display-lg">{title}</h2>
+        <p class="mt-5 text-lg leading-relaxed text-ink/75">{text}</p>
+      </div>
+      <div class="mt-8 flex flex-col gap-3 xs:flex-row lg:mt-0 lg:shrink-0">
+        <a href="/contact" class="btn btn-ink">Discuss a project <Icon name="arrow-right" /></a>
+        <a href="/services" class="btn border-ink/25 text-ink hover:border-ink">How I work</a>
+      </div>
+    </div>
+  </div>
+</section>
