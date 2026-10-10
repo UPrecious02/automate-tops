@@ -1,67 +1,85 @@
 order: 4
 title: Med Spa Customer Follow Up & Recovery
 category: Customer communication
-summary: Timed aftercare messages, missed appointment recovery and a clear view for staff of which clients need attention.
-seoDescription: A customer follow up and recovery workflow by John Eyitope that sends aftercare, rebooks missed appointments and alerts staff to client concerns.
-status: Demonstration
+workflowName: Med Spa Follow Up & Recovery Engine
+summary: An SMS follow up engine for a med spa. It sends aftercare, recovers missed appointments, prompts rebooking, reactivates inactive clients and routes replies to staff.
+seoDescription: A follow up and recovery engine by John Eyitope built with n8n, Airtable and Twilio for aftercare, no show recovery, rebooking and reactivation.
+status: Built and tested
 accent: orange
-visual: timeline
 
 problem: >
-  After a treatment, clients need aftercare instructions and a check in, and missed
-  appointments need a quick, polite attempt to rebook. When this depends on staff
-  memory, follow ups are inconsistent, clients drift away, and nobody can easily see
-  which clients are waiting on a response.
+  After a treatment, clients need aftercare and a check in. Missed appointments need a
+  quick, polite attempt to rebook, and clients who have not been back in a while need a
+  nudge. When all of this depends on staff memory, follow ups are inconsistent, clients
+  drift away, and nobody can see who has been contacted.
 
 solution: >
-  Appointment status changes start timed message sequences. A completed treatment
-  starts aftercare and a later check in. A missed appointment starts a rebooking
-  message. Replies are read and sorted so concerns reach staff quickly, and every
-  message sent or received is logged where the team can see it.
+  Airtable holds customers, appointments, a follow up log and staff tasks. Four flows
+  run on top of it: post treatment follow up, no show recovery, a daily rebooking check
+  and a daily reactivation check. Each one checks marketing opt in, whether the message
+  was already sent and a cap on attempts before sending an SMS through Twilio and
+  logging it. Replies arrive by webhook, are matched to the customer and classified by
+  AI as booking requests, opt outs or issues that need staff.
 
 workflowSteps:
   - stage: TRIGGER
-    title: Appointment status changes
-    description: A completed, missed or cancelled appointment starts the workflow.
+    title: Events and schedules
+    description: Completed and missed appointments, plus daily rebooking and reactivation checks.
   - stage: LOGIC
-    title: Choose the sequence
-    description: Each outcome follows its own path with its own timing.
+    title: Guard checks
+    description: Marketing opt in, already sent and attempt caps are checked before every message.
   - stage: ACTION
-    title: Timed messages
-    description: Aftercare, check in and rebooking messages go out at set intervals.
+    title: SMS through Twilio
+    description: Aftercare, recovery, rebooking and reactivation messages go out.
   - stage: AI
-    title: Read replies
-    description: Replies are sorted into rebooking intent, general questions and concerns.
+    title: Classify replies
+    description: Inbound SMS is matched by phone and sorted into booking, opt out or escalation.
   - stage: SYSTEM
-    title: Staff visibility
-    description: Every touchpoint is logged, and concerns alert staff immediately.
+    title: Records and staff tasks
+    description: Every message is logged, follow ups pause on escalation and staff tasks are created.
 
 implementation:
-  - Status based branching so each appointment outcome starts the correct sequence.
-  - Wait steps that time aftercare and check in messages after the visit.
-  - Reply classification that separates rebooking intent from questions and concerns.
-  - Any reply that mentions a reaction or concern alerts staff and pauses automated messages for that client.
-  - An activity log per client so staff can see the full history at a glance.
+  - Four separate flows, grouped on the canvas, for post treatment, no show recovery, rebooking and reactivation.
+  - Every send path checks marketing opt in and whether the message was already sent, so nobody is messaged twice.
+  - Code nodes enforce caps on rebooking and no show messages. When a cap is reached, a staff task is created instead.
+  - Replies come in through a Twilio webhook and are matched to a customer by phone. Unknown senders are logged separately.
+  - Escalated replies get a high or normal priority, the follow up is paused and staff are notified.
 
-tools: [n8n, OpenAI API, Google Sheets, Gmail, Slack]
-technicalSkills: [Event driven workflows, Timed sequences, Reply classification, Escalation rules, Activity logging]
+tools: [n8n, Airtable, Twilio, Webhooks]
+technicalSkills: [Event driven workflows, Deduplication and caps, AI reply classification, Escalation rules, Activity logging]
 
-validationNote: Built as a demonstration with sample appointments and sample replies. The workflow is designed to handle each of these cases.
+validationNote: Built and run with test customers and appointments. The screenshots below come from those runs.
 validation:
-  - A completed treatment starts aftercare and a scheduled check in.
-  - A missed appointment receives a rebooking message.
-  - A reply asking to rebook is routed to the booking step.
-  - A reply describing a concern alerts staff and stops automated messages.
-  - A client who opts out receives no further messages.
+  - Test SMS messages were sent through Twilio and recorded in the follow up log.
+  - The log records every message with its channel and the time it was sent.
+  - Test appointments covered completed, no show, cancelled and scheduled states, so each path could be exercised.
 
 designDecisions:
-  - Anything that sounds like a medical concern goes to a person. The system never gives medical advice.
-  - An opt out stops every sequence for that client, immediately.
+  - Opt in is checked before any message is sent, on every path.
+  - When a cap is reached, a person takes over through a staff task rather than another automated message.
+  - A reply flagged as an issue pauses automation for that client.
 
 limitations:
-  - Message timing has to be set per treatment type with input from the clinic.
-  - Message wording needs approval from the business before going live.
+  - Tested on a Twilio trial account, so messages carry the trial prefix until a paid number is connected.
+  - Follow up timing windows need to be agreed with the clinic.
 
 futureImprovements:
-  - A review request after positive check ins.
-  - A simple weekly view of clients who have not rebooked.
+  - Ask for a review after positive check ins.
+  - A weekly summary for the clinic of recovered and rebooked clients.
+
+evidence:
+  - src: /images/work/medspa-canvas.webp
+    alt: n8n canvas with grouped flows for post treatment follow up, rebooking, no show recovery, reactivation and inbound SMS handling
+    caption: The full engine. Four grouped flows for follow up, rebooking, no show recovery and reactivation, plus inbound reply handling.
+    width: 1460
+    height: 640
+  - src: /images/work/medspa-appointments.webp
+    alt: Airtable appointments table with treatments, dates and statuses such as Completed, No Show and Scheduled
+    caption: Test appointments in Airtable covering completed, no show, cancelled and scheduled states.
+    width: 1160
+    height: 600
+  - src: /images/work/medspa-log.webp
+    alt: Airtable follow up log listing messages, channels and send times
+    caption: The follow up log. Each message is recorded with its channel and time, including test SMS sent through Twilio.
+    width: 1214
+    height: 700

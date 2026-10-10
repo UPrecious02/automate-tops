@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/home/Hero.astro';
+import ToolBand from '../components/home/ToolBand.astro';
 import Capabilities from '../components/home/Capabilities.astro';
 import SelectedWork from '../components/home/SelectedWork.astro';
 import Approach from '../components/home/Approach.astro';
@@ -13,6 +14,7 @@ import { site } from '../data/site';
 
 <Base title={`${site.name} | ${site.title}`} description={site.description}>
   <Hero />
+  <ToolBand />
   <Capabilities />
   <SelectedWork />
   <Approach />

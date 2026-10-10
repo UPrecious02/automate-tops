@@ -13,14 +13,13 @@ export const site = {
   email: 'hello@automateops.online',
 
   social: {
-    linkedin: '', // e.g. https://www.linkedin.com/in/username
-    x: '', // e.g. https://x.com/username
-    github: '', // e.g. https://github.com/username
+    linkedin: 'https://www.linkedin.com/in/temifoluwa-eyitope-a82710387',
+    x: 'https://x.com/JohnEyitope',
+    github: '', // e.g. https://github.com/username (hidden while empty)
   },
 
-  // Drop the portrait into public/images/ and set the path, e.g. '/images/john-eyitope.jpg'.
-  // While this is null, a branded placeholder is shown instead.
-  portrait: null as string | null,
+  // Portrait in public/images/. Set to null to show the branded monogram instead.
+  portrait: '/images/john-eyitope.webp' as string | null,
 
   certificate: {
     name: 'n8n Professional Certificate',

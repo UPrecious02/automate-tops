@@ -4,58 +4,55 @@ const capabilities = [
     code: '01',
     title: 'Customer communication systems',
     body: 'AI assisted support, conversational ordering, request classification, appointment enquiries and follow up that remembers the context.',
-    tags: ['Support', 'Ordering', 'Booking', 'Follow up'],
-    accent: 'bg-lime',
+    tags: ['WhatsApp', 'SMS', 'Telegram', 'Booking'],
+    port: '#FF784F',
   },
   {
     code: '02',
     title: 'Business process automation',
     body: 'Application integrations, event processing, data movement, trigger based actions and the repetitive admin work that quietly eats the week.',
     tags: ['Integrations', 'Events', 'Data sync', 'Admin'],
-    accent: 'bg-orange',
+    port: '#8F8F8F',
   },
   {
     code: '03',
     title: 'Research and information workflows',
-    body: 'Lead research, data extraction, enrichment, deduplication, email triage and structured processing that supports better decisions.',
-    tags: ['Research', 'Extraction', 'Enrichment', 'Triage'],
-    accent: 'bg-ink',
+    body: 'Lead research, data extraction, enrichment, deduplication, email triage and knowledge bases built from your own documents.',
+    tags: ['Research', 'Extraction', 'Triage', 'Knowledge'],
+    port: '#C5F467',
   },
 ];
 ---
 
-<section id="capabilities" class="on-light bg-paper text-ink" aria-labelledby="capabilities-title">
+<section id="capabilities" class="bg-ink" aria-labelledby="capabilities-title">
   <div class="container-x section-y">
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+    <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
       <div class="lg:col-span-7" data-reveal>
-        <p class="label text-mute-dark">What I build</p>
+        <p class="label text-lime">What I build</p>
         <h2 id="capabilities-title" class="display display-lg mt-4">Systems with a job to do.</h2>
       </div>
-      <p class="lead text-mute-dark lg:col-span-5" data-reveal style="--reveal-delay:100ms">
+      <p class="lead text-paper/70 lg:col-span-5" data-reveal style="--reveal-delay:100ms">
         Every build starts from a business process, not a tool. The goal is work that moves forward on its own, with people
         stepping in only where their judgement matters.
       </p>
     </div>
 
-    <ol class="mt-14 grid border-t border-ink md:mt-20 md:grid-cols-3">
+    <ol class="relative mt-14 grid gap-5 md:mt-20 lg:grid-cols-3 lg:gap-8">
+      <li class="pointer-events-none absolute inset-x-6 top-1/2 hidden h-px bg-line lg:block" aria-hidden="true"></li>
       {
         capabilities.map((item, i) => (
-          <li
-            class="group relative flex flex-col border-b border-ink py-8 md:border-b-0 md:px-8 md:py-10 md:first:pl-0 md:[&:not(:last-child)]:border-r"
-            data-reveal
-            style={`--reveal-delay:${i * 90}ms`}
-          >
+          <li class="node flex flex-col p-7 sm:p-8" data-reveal style={`--port:${item.port};--reveal-delay:${i * 90}ms`}>
+            {i > 0 && <span class="port-l hidden lg:block" aria-hidden="true" />}
+            {i < capabilities.length - 1 && <span class="port-r hidden lg:block" aria-hidden="true" />}
             <div class="flex items-center justify-between">
-              <span class="font-mono text-sm font-semibold">{item.code}</span>
-              <span class={`h-3 w-3 rounded-full ${item.accent}`} aria-hidden="true" />
+              <span class="font-mono text-xs text-mute">node_{item.code}</span>
+              <span class="h-2.5 w-2.5 rounded-full" style={`background:${item.port}`} aria-hidden="true" />
             </div>
-            <h3 class="mt-8 font-display text-[1.9rem] leading-[0.95] font-extrabold uppercase [font-stretch:72%] md:mt-14 md:text-[2.2rem]">
-              {item.title}
-            </h3>
-            <p class="mt-4 max-w-sm leading-relaxed text-mute-dark">{item.body}</p>
-            <ul class="mt-6 flex flex-wrap gap-2 md:mt-auto md:pt-8">
+            <h3 class="display mt-10 text-[1.7rem] sm:text-[1.9rem]">{item.title}</h3>
+            <p class="mt-4 leading-relaxed text-paper/70">{item.body}</p>
+            <ul class="mt-8 flex flex-wrap gap-2 lg:mt-auto lg:pt-8">
               {item.tags.map((tag) => (
-                <li class="chip text-ink/70">{tag}</li>
+                <li class="chip text-paper/60">{tag}</li>
               ))}
             </ul>
           </li>

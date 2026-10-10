@@ -38,26 +38,30 @@ The contact form only works on the deployed Netlify site. Locally it will show t
 | Logo files | `public/brand/` |
 | Social sharing image | `public/og.png` |
 
-## Adding the real assets
+## Assets already in place
 
-**Portrait:** save it as `public/images/john-eyitope.jpg` (around 900 × 1125, portrait orientation, under 300 KB), then set `portrait: '/images/john-eyitope.jpg'` in `src/data/site.ts`. It replaces the monogram in the hero and the About section automatically.
+* **Portrait:** `public/images/john-eyitope.webp`, set in `src/data/site.ts`.
+* **LinkedIn and X:** set in `src/data/site.ts`. GitHub is empty, so it stays hidden until a link is added.
+* **Workflow screenshots:** `public/images/work/`, listed under `evidence` in each case study file. The first image in each list is the cover shown on the homepage card and at the top of the case study. Phone numbers in the restaurant orders sheet are blurred.
 
-**Social links:** fill in `linkedin`, `x` and `github` in `src/data/site.ts`. Empty links are hidden, so nothing points nowhere.
+## Still to add
 
 **Certificate:** add the verification URL to `certificate.verifyUrl`. A "Verify certificate" link appears once it is set.
 
-**Workflow screenshots:** put images in `public/images/work/` and list them under `evidence` in the case study's YAML file:
+**More screenshots:** put images in `public/images/work/` (WebP or PNG, around 1600 px wide) and add them to the case study's `evidence` list:
 
 ```yaml
 evidence:
-  - src: /images/work/email-triage-canvas.png
-    alt: n8n canvas showing the email triage workflow from trigger to routing
-    caption: The full workflow. Low confidence results branch to the review queue at the bottom.
+  - src: /images/work/lead-results.webp
+    alt: Google Sheets list of scored leads produced by the workflow
+    caption: Leads written to the sheet with their score.
     width: 1600
     height: 900
 ```
 
-Crop screenshots so they are readable, and never show API keys, credentials or real customer data.
+`width` and `height` must match the real image size. Screenshots wider than 1.6 times their height automatically take the full width of the gallery so they stay readable. Never show API keys, credentials or real customer data.
+
+**Lead Research results:** this case study is still marked `Demonstration` because there is only a canvas screenshot. Once John shares a sheet of results from a real run, add it to the evidence list, update the validation lines and change the status to `Built and tested`.
 
 ## Adding a new case study
 
@@ -66,12 +70,13 @@ Copy any file in `src/content/case-studies/`, rename it (the file name becomes t
 ## Before launch: confirm with John
 
 * The email address `hello@automateops.online` exists and receives mail.
-* The tools listed in each case study match what each workflow really uses.
-* The validation lists describe cases he has actually run. When a workflow has passed real tests, change its `status` to `Built and tested`, and use `Client deployment` only when it really was deployed for a client.
+* The tools and validation lines in each case study match what he built and ran. They were written from his screenshots.
+* Use `Client deployment` only when a workflow was really deployed for a client.
 * Only add `verifiedMetrics` when there is a real measurement with a clear time period.
 
 ## Brand
 
 * Near black `#101010`, warm off white `#F5F1E8`, acid lime `#C5F467`, signal orange `#FF784F`
-* Display type: Archivo (condensed width). Body: Geist. Technical labels: JetBrains Mono. All self hosted.
+* Display type: Archivo (expanded width, sentence case). Body: Geist. Technical labels: JetBrains Mono. All self hosted.
+* Layout language: an n8n style dot grid, rounded node cards with connection ports, and screenshots framed as app windows.
 * Logo: a JE monogram drawn as a small workflow. The lime port is the trigger, the orange node is the action.

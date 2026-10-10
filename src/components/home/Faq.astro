@@ -29,25 +29,26 @@ const faqs = [
 ];
 ---
 
-<section id="faq" class="border-t border-line bg-ink" aria-labelledby="faq-title">
+<section id="faq" class="on-light bg-paper text-ink" aria-labelledby="faq-title">
   <div class="container-x section-y">
     <div class="grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-4" data-reveal>
-        <p class="label text-lime">FAQ</p>
-        <h2 id="faq-title" class="display mt-4 text-[clamp(2.6rem,5.5vw,4.75rem)]">Good questions.</h2>
+        <p class="label text-mute-dark">FAQ</p>
+        <h2 id="faq-title" class="display display-lg mt-4">Good questions.</h2>
+        <p class="mt-5 max-w-xs leading-relaxed text-mute-dark">Anything else? Ask it in the enquiry form below.</p>
       </div>
 
-      <div class="lg:col-span-8" data-reveal style="--reveal-delay:100ms">
+      <div class="space-y-3 lg:col-span-8" data-reveal style="--reveal-delay:100ms">
         {
           faqs.map((item) => (
-            <details class="faq group border-t border-line last:border-b">
-              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-left">
-                <span class="font-display text-xl leading-snug font-semibold [font-stretch:85%] sm:text-[1.45rem]">{item.q}</span>
-                <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line transition-all duration-300 group-open:rotate-45 group-open:border-lime group-open:bg-lime group-open:text-ink">
+            <details class="faq group rounded-[1.25rem] border border-ink/10 bg-paper-2/80 transition-colors open:border-ink/25 open:bg-white/50">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 px-5 py-5 text-left sm:px-7 sm:py-6">
+                <span class="display text-lg leading-snug sm:text-xl">{item.q}</span>
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition-all duration-300 group-open:rotate-45 group-open:bg-lime group-open:text-ink">
                   <Icon name="plus" size={16} />
                 </span>
               </summary>
-              <p class="max-w-2xl pr-12 pb-7 leading-relaxed text-paper/75">{item.a}</p>
+              <p class="max-w-2xl px-5 pb-6 leading-relaxed text-ink/75 sm:px-7 sm:pr-20">{item.a}</p>
             </details>
           ))
         }

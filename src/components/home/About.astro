@@ -5,33 +5,34 @@ import { site } from '../../data/site';
 
 const timeline = [
   { when: '2024 onward', what: 'AI automation freelancing', detail: 'Designing and building workflows for business processes.' },
-  { when: '2024 to 2025', what: 'UI/UX internship', detail: 'Brainbench Academy. User focused thinking that shapes how workflows are designed.' },
+  { when: '2024 to 2025', what: 'UI/UX internship, Brainbench Academy', detail: 'User focused thinking that shapes how workflows are designed.' },
   { when: 'Degree', what: 'Computer Engineering', detail: 'An engineering foundation in systems, logic and how software talks to software.' },
 ];
 ---
 
-<section id="about" class="on-light bg-paper text-ink" aria-labelledby="about-title">
+<section id="about" class="border-t border-line bg-ink" aria-labelledby="about-title">
   <div class="container-x section-y">
-    <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-14">
       <div class="lg:col-span-5" data-reveal>
-        <Portrait class="aspect-[4/5] max-w-md rounded-sm border border-ink/15" />
-        <div class="mt-4 flex max-w-md items-start gap-4 rounded-sm bg-ink p-5 text-paper">
+        <div class="node mx-auto max-w-md p-2.5 lg:mx-0" style="--port:#C5F467">
+          <span class="port-r" aria-hidden="true"></span>
+          <Portrait class="aspect-[4/5] rounded-[0.9rem]" />
+        </div>
+        <div class="node mx-auto mt-4 flex max-w-md items-start gap-4 p-5 lg:mx-0">
           <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-orange text-ink">
             <Icon name="badge" size={20} />
           </span>
           <div>
             <p class="label text-mute">Credential</p>
             <p class="mt-1 font-semibold">{site.certificate.name}</p>
-            <p class="mt-1 text-sm text-mute">
-              Issued by the {site.certificate.issuer}, {site.certificate.issued}
-            </p>
+            <p class="mt-1 text-sm text-mute">Issued by the {site.certificate.issuer}, {site.certificate.issued}</p>
             {
               site.certificate.verifyUrl && (
                 <a
                   href={site.certificate.verifyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="label mt-3 inline-flex items-center gap-1.5 text-lime hover:underline"
+                  class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-lime hover:underline"
                 >
                   Verify certificate <Icon name="arrow-up-right" size={14} />
                   <span class="sr-only">(opens in a new tab)</span>
@@ -44,11 +45,11 @@ const timeline = [
 
       <div class="lg:col-span-7">
         <div data-reveal>
-          <p class="label text-mute-dark">About John</p>
-          <h2 id="about-title" class="display display-lg mt-4">Builder first. AI second.</h2>
+          <p class="label text-lime">About John</p>
+          <h2 id="about-title" class="display display-lg mt-4">A builder first. AI is one of the tools.</h2>
         </div>
 
-        <div class="mt-8 max-w-2xl space-y-5 text-[1.075rem] leading-relaxed text-ink/85" data-reveal style="--reveal-delay:100ms">
+        <div class="mt-8 max-w-2xl space-y-5 text-[1.075rem] leading-relaxed text-paper/80" data-reveal style="--reveal-delay:100ms">
           <p>
             I'm John Eyitope, an AI Automation &amp; Workflow Specialist with a Computer Engineering background and hands on
             experience building automation workflows. My work focuses on connecting AI, business applications, APIs and
@@ -59,20 +60,20 @@ const timeline = [
             and trigger the right actions across connected applications. My approach combines technical implementation
             with an understanding of the process being improved.
           </p>
-          <p class="font-medium text-ink">
+          <p class="font-medium text-paper">
             The goal is not to add AI for its own sake. It is to build systems that solve practical problems and give
             people more time for the work that needs their attention.
           </p>
         </div>
 
-        <ol class="mt-12 border-t border-ink" data-reveal style="--reveal-delay:160ms">
+        <ol class="mt-12 space-y-3" data-reveal style="--reveal-delay:160ms">
           {
             timeline.map((item) => (
-              <li class="grid gap-1 border-b border-ink/20 py-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
-                <span class="label pt-1 text-mute-dark">{item.when}</span>
+              <li class="node grid gap-1 p-5 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                <span class="label pt-0.5 text-mute">{item.when}</span>
                 <div>
                   <p class="font-semibold">{item.what}</p>
-                  <p class="mt-1 text-sm leading-relaxed text-mute-dark">{item.detail}</p>
+                  <p class="mt-1 text-sm leading-relaxed text-paper/65">{item.detail}</p>
                 </div>
               </li>
             ))

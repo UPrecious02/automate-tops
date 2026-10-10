@@ -18,15 +18,15 @@ const { class: className, eager = false } = Astro.props;
       <img
         src={site.portrait}
         alt="Portrait of John Eyitope"
-        width="900"
-        height="1125"
+        width="800"
+        height="1000"
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         fetchpriority={eager ? 'high' : 'auto'}
-        class="h-full w-full object-cover grayscale-[15%]"
+        class="h-full w-full object-cover object-top"
       />
     ) : (
-      <div class="dot-bg flex h-full w-full items-center justify-center bg-paper" role="img" aria-label="John Eyitope monogram">
+      <div class="canvas-bg-light flex h-full w-full items-center justify-center bg-paper" role="img" aria-label="John Eyitope monogram">
         <svg viewBox="0 0 48 48" class="w-[52%]" fill="none" aria-hidden="true">
           <path
             d="M8 9H40M20 9V30.5C20 35.2 16.2 39 11.5 39H8M28 9V39H40M28 24H35"

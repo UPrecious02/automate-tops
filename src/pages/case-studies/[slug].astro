@@ -2,7 +2,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import WorkVisual from '../../components/home/WorkVisual.astro';
 import WorkflowDiagram from '../../components/case-study/WorkflowDiagram.astro';
 import EvidenceGallery from '../../components/case-study/EvidenceGallery.astro';
 
@@ -26,10 +25,12 @@ const { study, next } = Astro.props;
 const { data } = study;
 const accentText = data.accent === 'lime' ? 'text-lime' : 'text-orange';
 const accentBg = data.accent === 'lime' ? 'bg-lime' : 'bg-orange';
+const cover = data.evidence[0];
+const gallery = data.evidence.slice(1);
 
 const statusCopy: Record<typeof data.status, string> = {
-  Demonstration: 'Built and run with sample data. No client data is shown.',
-  'Built and tested': 'Implemented and tested. The results are listed below.',
+  Demonstration: 'Workflow built in n8n. Run results will be added as they are recorded.',
+  'Built and tested': 'Built and run with test data. Screenshots come from real runs.',
   'Client deployment': 'Deployed for a client. Details shared with permission.',
 };
 
@@ -48,8 +49,7 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
 
 <Base title={`${data.title} | Case study | John Eyitope`} description={data.seoDescription} type="article">
   <article>
-    <!-- Hero -->
-    <header class="grid-bg border-b border-line">
+    <header class="canvas-bg">
       <div class="container-x pt-8 pb-14 md:pt-12 md:pb-20">
         <nav aria-label="Breadcrumb">
           <ol class="flex flex-wrap items-center gap-2 font-mono text-xs text-mute">
@@ -61,195 +61,211 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
           </ol>
         </nav>
 
-        <div class="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-end">
-          <div class="lg:col-span-7" data-reveal>
-            <div class="flex flex-wrap items-center gap-3">
-              <span class="font-mono text-xs text-mute">Case study 0{data.order}</span>
-              <span class:list={['label', accentText]}>{data.category}</span>
-            </div>
-            <h1 class="display display-lg mt-5">{data.title}</h1>
-            <p class="lead mt-6 max-w-2xl text-paper/80">{data.summary}</p>
-
-            <div class="mt-8 inline-flex max-w-full items-start gap-3 rounded-sm border border-line bg-ink-2 px-4 py-3">
-              <span class:list={['mt-1.5 h-2 w-2 shrink-0 rounded-full', accentBg]} aria-hidden="true"></span>
-              <p class="text-sm leading-relaxed">
-                <span class="label mr-1.5 text-paper">{data.status}</span>
-                <span class="text-paper/70">{statusCopy[data.status]}</span>
-              </p>
-            </div>
+        <div class="mt-10 max-w-4xl md:mt-14" data-reveal>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="font-mono text-xs text-mute">Case study 0{data.order}</span>
+            <span class:list={['h-2 w-2 rounded-full', accentBg]} aria-hidden="true"></span>
+            <span class="label text-paper/80">{data.category}</span>
           </div>
+          <h1 class="display display-xl mt-5">{data.title}</h1>
+          <p class="lead mt-6 max-w-2xl text-paper/80">{data.summary}</p>
 
-          <div class="relative min-h-[18rem] overflow-hidden rounded-sm border border-line bg-ink sm:min-h-[20rem] lg:col-span-5" data-reveal style="--reveal-delay:120ms">
-            <div class="grid-bg absolute inset-0 opacity-60" aria-hidden="true"></div>
-            <div class="relative h-full min-h-[inherit]">
-              <WorkVisual visual={data.visual} accent={data.accent} />
-            </div>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <p class="inline-flex items-center gap-2.5 rounded-full border border-line bg-ink-2 px-4 py-2 text-sm">
+              <span class:list={['h-2 w-2 shrink-0 rounded-full', accentBg]} aria-hidden="true"></span>
+              <span class="font-semibold">{data.status}</span>
+              <span class="hidden text-paper/65 sm:inline">{statusCopy[data.status]}</span>
+            </p>
           </div>
+          <p class="mt-3 text-sm text-paper/65 sm:hidden">{statusCopy[data.status]}</p>
         </div>
+
+        {
+          cover && (
+            <figure class="mt-12 md:mt-16" data-reveal style="--reveal-delay:120ms">
+              <div class="frame">
+                <div class="frame-bar">
+                  <span class="frame-dots" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  <span class="min-w-0 truncate font-mono text-[0.72rem] text-mute">n8n · {data.workflowName}</span>
+                </div>
+                <a href={cover.src} target="_blank" rel="noopener" class="block bg-ink">
+                  <img src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} decoding="async" fetchpriority="high" class="w-full" />
+                  <span class="sr-only">Open full size image in a new tab</span>
+                </a>
+              </div>
+              <figcaption class="mt-3 text-sm leading-relaxed text-paper/65">{cover.caption}</figcaption>
+            </figure>
+          )
+        }
       </div>
     </header>
 
-    <div class="container-x py-16 md:py-24">
-      <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
-        <!-- Section index -->
-        <aside class="hidden lg:col-span-3 lg:block">
-          <nav aria-label="On this page" class="sticky top-28">
-            <p class="label text-mute">On this page</p>
-            <ol class="mt-5 space-y-1 border-l border-line">
-              {
-                sections.map((section, i) => (
-                  <li>
-                    <a
-                      href={`#${section.id}`}
-                      class="-ml-px flex gap-3 border-l border-transparent py-2 pl-4 text-sm text-paper/70 transition-colors hover:border-lime hover:text-paper"
-                      data-toc-link={section.id}
-                    >
-                      <span class="font-mono text-xs text-mute">0{i + 1}</span>
-                      {section.label}
-                    </a>
-                  </li>
-                ))
-              }
-            </ol>
-          </nav>
-        </aside>
-
-        <div class="min-w-0 space-y-20 md:space-y-28 lg:col-span-9">
-          <section id="problem" aria-labelledby="problem-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('problem')}</p>
-            <h2 id="problem-title" class="display display-md mt-3">The problem</h2>
-            <p class="mt-6 max-w-3xl text-lg leading-relaxed text-paper/85">{data.problem}</p>
-          </section>
-
-          <section id="solution" aria-labelledby="solution-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('solution')}</p>
-            <h2 id="solution-title" class="display display-md mt-3">The solution</h2>
-            <p class="mt-6 max-w-3xl text-lg leading-relaxed text-paper/85">{data.solution}</p>
-          </section>
-
-          <section id="architecture" aria-labelledby="architecture-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('architecture')}</p>
-            <h2 id="architecture-title" class="display display-md mt-3">Architecture</h2>
-            <div class="mt-10 rounded-sm border border-line bg-ink-2 p-6 sm:p-8">
-              <WorkflowDiagram steps={data.workflowSteps} />
-            </div>
-          </section>
-
-          <section id="implementation" aria-labelledby="implementation-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('implementation')}</p>
-            <h2 id="implementation-title" class="display display-md mt-3">Implementation</h2>
-            <ol class="mt-8 max-w-3xl">
-              {
-                data.implementation.map((item, i) => (
-                  <li class="grid grid-cols-[2.5rem_1fr] gap-4 border-t border-line py-5 last:border-b">
-                    <span class:list={['font-mono text-sm', accentText]}>{String(i + 1).padStart(2, '0')}</span>
-                    <span class="leading-relaxed text-paper/85">{item}</span>
-                  </li>
-                ))
-              }
-            </ol>
-            {
-              data.evidence.length > 0 && (
-                <div class="mt-12">
-                  <EvidenceGallery items={data.evidence} />
-                </div>
-              )
-            }
-          </section>
-
-          <section id="tools" aria-labelledby="tools-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('tools')}</p>
-            <h2 id="tools-title" class="display display-md mt-3">Tools &amp; skills</h2>
-            <div class="mt-8 grid gap-4 md:grid-cols-2">
-              <div class="rounded-sm border border-line p-6">
-                <h3 class="label text-paper">Tools and platforms</h3>
-                <ul class="mt-5 flex flex-wrap gap-2">
-                  {data.tools.map((tool) => <li class="chip text-paper/80">{tool}</li>)}
-                </ul>
-              </div>
-              <div class:list={['rounded-sm p-6 text-ink', accentBg]}>
-                <h3 class="label">Technical skills shown</h3>
-                <ul class="mt-5 flex flex-wrap gap-2">
-                  {data.technicalSkills.map((skill) => <li class="chip">{skill}</li>)}
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section id="validation" aria-labelledby="validation-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('validation')}</p>
-            <h2 id="validation-title" class="display display-md mt-3">Validation &amp; outcome</h2>
-            <div class="on-light mt-8 rounded-sm bg-paper p-6 text-ink sm:p-10">
-              <p class="max-w-2xl leading-relaxed text-mute-dark">{data.validationNote}</p>
-              <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+    <div class="border-t border-line">
+      <div class="container-x py-16 md:py-24">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+          <aside class="hidden lg:col-span-3 lg:block">
+            <nav aria-label="On this page" class="sticky top-32">
+              <p class="label text-mute">On this page</p>
+              <ol class="mt-5 space-y-1">
                 {
-                  data.validation.map((item) => (
-                    <li class="flex gap-3 rounded-sm border border-ink/15 bg-paper-2 p-4 text-sm leading-relaxed">
-                      <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-lime">
-                        <Icon name="check" size={12} />
-                      </span>
-                      {item}
+                  sections.map((section, i) => (
+                    <li>
+                      <a
+                        href={`#${section.id}`}
+                        class="flex gap-3 rounded-full px-4 py-2 text-sm text-paper/70 transition-colors hover:bg-ink-2 hover:text-paper"
+                        data-toc-link={section.id}
+                      >
+                        <span class="font-mono text-xs text-mute">0{i + 1}</span>
+                        {section.label}
+                      </a>
                     </li>
                   ))
                 }
-              </ul>
+              </ol>
+            </nav>
+          </aside>
+
+          <div class="min-w-0 space-y-20 md:space-y-24 lg:col-span-9">
+            <section id="problem" aria-labelledby="problem-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('problem')}</p>
+              <h2 id="problem-title" class="display display-md mt-3">The problem</h2>
+              <p class="mt-6 max-w-3xl text-lg leading-relaxed text-paper/85">{data.problem}</p>
+            </section>
+
+            <section id="solution" aria-labelledby="solution-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('solution')}</p>
+              <h2 id="solution-title" class="display display-md mt-3">The solution</h2>
+              <p class="mt-6 max-w-3xl text-lg leading-relaxed text-paper/85">{data.solution}</p>
+            </section>
+
+            <section id="architecture" aria-labelledby="architecture-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('architecture')}</p>
+              <h2 id="architecture-title" class="display display-md mt-3">Architecture</h2>
+              <div class="node canvas-bg mt-10 p-6 sm:p-8">
+                <WorkflowDiagram steps={data.workflowSteps} />
+              </div>
+            </section>
+
+            <section id="implementation" aria-labelledby="implementation-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('implementation')}</p>
+              <h2 id="implementation-title" class="display display-md mt-3">Implementation</h2>
+              <ol class="mt-8 max-w-3xl space-y-3">
+                {
+                  data.implementation.map((item, i) => (
+                    <li class="node grid grid-cols-[2.25rem_1fr] gap-3 px-5 py-4">
+                      <span class:list={['font-mono text-sm', accentText]}>{String(i + 1).padStart(2, '0')}</span>
+                      <span class="leading-relaxed text-paper/85">{item}</span>
+                    </li>
+                  ))
+                }
+              </ol>
               {
-                data.verifiedMetrics.length > 0 && (
-                  <dl class="mt-8 grid gap-4 border-t border-ink/15 pt-8 sm:grid-cols-3">
-                    {data.verifiedMetrics.map((metric) => (
-                      <div>
-                        <dt class="label text-mute-dark">{metric.label}</dt>
-                        <dd class="display mt-2 text-5xl">{metric.value}</dd>
-                        <dd class="mt-1 font-mono text-xs text-mute-dark">{metric.period}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                gallery.length > 0 && (
+                  <div class="mt-12">
+                    <p class="label mb-5 text-mute">From the test runs</p>
+                    <EvidenceGallery items={gallery} />
+                  </div>
                 )
               }
-            </div>
-          </section>
+            </section>
 
-          <section id="reflection" aria-labelledby="reflection-title" class="scroll-mt-28" data-reveal>
-            <p class="label text-mute">{num('reflection')}</p>
-            <h2 id="reflection-title" class="display display-md mt-3">Reflection</h2>
-            <div class="mt-8 grid gap-10 md:grid-cols-2">
-              <div>
-                <h3 class="label text-lime">Design decisions</h3>
-                <ul class="mt-4 space-y-4">
-                  {data.designDecisions.map((item) => <li class="border-l-2 border-lime pl-4 leading-relaxed text-paper/85">{item}</li>)}
-                </ul>
-              </div>
-              <div>
-                <h3 class="label text-orange">Limitations</h3>
-                <ul class="mt-4 space-y-4">
-                  {data.limitations.map((item) => <li class="border-l-2 border-orange pl-4 leading-relaxed text-paper/85">{item}</li>)}
-                </ul>
-              </div>
-            </div>
-            {
-              data.futureImprovements.length > 0 && (
-                <div class="mt-10 rounded-sm border border-dashed border-line p-6">
-                  <h3 class="label text-paper">Next improvements</h3>
-                  <ul class="mt-4 space-y-2">
-                    {data.futureImprovements.map((item) => (
-                      <li class="flex gap-3 leading-relaxed text-paper/80">
-                        <span class="font-mono text-mute" aria-hidden="true">→</span>
-                        {item}
-                      </li>
-                    ))}
+            <section id="tools" aria-labelledby="tools-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('tools')}</p>
+              <h2 id="tools-title" class="display display-md mt-3">Tools &amp; skills</h2>
+              <div class="mt-8 grid gap-4 md:grid-cols-2">
+                <div class="node p-6">
+                  <h3 class="label text-paper">Tools and platforms</h3>
+                  <ul class="mt-5 flex flex-wrap gap-2">
+                    {data.tools.map((tool) => <li class="chip text-paper/80">{tool}</li>)}
                   </ul>
                 </div>
-              )
-            }
-          </section>
+                <div class:list={['rounded-[1.25rem] p-6 text-ink', accentBg]}>
+                  <h3 class="label">Technical skills shown</h3>
+                  <ul class="mt-5 flex flex-wrap gap-2">
+                    {data.technicalSkills.map((skill) => <li class="chip">{skill}</li>)}
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section id="validation" aria-labelledby="validation-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('validation')}</p>
+              <h2 id="validation-title" class="display display-md mt-3">Validation &amp; outcome</h2>
+              <div class="on-light mt-8 rounded-[1.5rem] bg-paper p-6 text-ink sm:p-10">
+                <p class="max-w-2xl leading-relaxed text-mute-dark">{data.validationNote}</p>
+                <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+                  {
+                    data.validation.map((item) => (
+                      <li class="flex gap-3 rounded-2xl border border-ink/10 bg-paper-2 p-4 text-sm leading-relaxed">
+                        <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-lime">
+                          <Icon name="check" size={12} />
+                        </span>
+                        {item}
+                      </li>
+                    ))
+                  }
+                </ul>
+                {
+                  data.verifiedMetrics.length > 0 && (
+                    <dl class="mt-8 grid gap-4 border-t border-ink/15 pt-8 sm:grid-cols-3">
+                      {data.verifiedMetrics.map((metric) => (
+                        <div>
+                          <dt class="label text-mute-dark">{metric.label}</dt>
+                          <dd class="display mt-2 text-5xl">{metric.value}</dd>
+                          <dd class="mt-1 font-mono text-xs text-mute-dark">{metric.period}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )
+                }
+              </div>
+            </section>
+
+            <section id="reflection" aria-labelledby="reflection-title" class="scroll-mt-28" data-reveal>
+              <p class="label text-mute">{num('reflection')}</p>
+              <h2 id="reflection-title" class="display display-md mt-3">Reflection</h2>
+              <div class="mt-8 grid gap-4 md:grid-cols-2">
+                <div class="node p-6">
+                  <h3 class="label text-lime">Design decisions</h3>
+                  <ul class="mt-4 space-y-4">
+                    {data.designDecisions.map((item) => <li class="border-l-2 border-lime pl-4 leading-relaxed text-paper/85">{item}</li>)}
+                  </ul>
+                </div>
+                <div class="node p-6">
+                  <h3 class="label text-orange">Limitations</h3>
+                  <ul class="mt-4 space-y-4">
+                    {data.limitations.map((item) => <li class="border-l-2 border-orange pl-4 leading-relaxed text-paper/85">{item}</li>)}
+                  </ul>
+                </div>
+              </div>
+              {
+                data.futureImprovements.length > 0 && (
+                  <div class="mt-4 rounded-[1.25rem] border border-dashed border-line p-6">
+                    <h3 class="label text-paper">Next improvements</h3>
+                    <ul class="mt-4 space-y-2">
+                      {data.futureImprovements.map((item) => (
+                        <li class="flex gap-3 leading-relaxed text-paper/80">
+                          <span class="font-mono text-mute" aria-hidden="true">→</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              }
+            </section>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Next case study and CTA -->
     <footer class="border-t border-line">
-      <a href={`/case-studies/${next.id}`} class="group block bg-ink-2 transition-colors hover:bg-ink-3">
-        <div class="container-x flex items-center justify-between gap-6 py-12 md:py-16">
+      <div class="container-x py-12 md:py-16">
+        <a href={`/case-studies/${next.id}`} class="node group flex items-center justify-between gap-6 p-6 transition-colors hover:border-lime sm:p-10">
           <div class="min-w-0">
             <p class="label text-mute">Next case study</p>
             <p class="display display-md mt-3 transition-colors group-hover:text-lime">{next.data.title}</p>
@@ -257,13 +273,13 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
           <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-line transition-colors group-hover:border-lime group-hover:bg-lime group-hover:text-ink" aria-hidden="true">
             <Icon name="arrow-right" size={22} />
           </span>
-        </div>
-      </a>
-      <div class="container-x flex flex-col items-start justify-between gap-6 py-12 sm:flex-row sm:items-center">
-        <p class="max-w-md text-lg leading-relaxed text-paper/85">Have a process that works like this today, by hand?</p>
-        <div class="flex flex-col gap-3 xs:flex-row">
-          <a href="/#contact" class="btn btn-lime">Discuss a project <Icon name="arrow-right" /></a>
-          <a href="/#work" class="btn btn-ghost"><Icon name="arrow-left" /> All work</a>
+        </a>
+        <div class="mt-10 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+          <p class="max-w-md text-lg leading-relaxed text-paper/85">Have a process that still runs by hand?</p>
+          <div class="flex flex-col gap-3 xs:flex-row">
+            <a href="/#contact" class="btn btn-lime">Discuss a project <Icon name="arrow-right" /></a>
+            <a href="/#work" class="btn btn-ghost"><Icon name="arrow-left" /> All work</a>
+          </div>
         </div>
       </div>
     </footer>
@@ -271,7 +287,6 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
 </Base>
 
 <script>
-  // Highlight the current section in the side index.
   const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
   if (links.length && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
@@ -280,7 +295,7 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
           if (!entry.isIntersecting) return;
           links.forEach((link) => {
             const active = link.dataset.tocLink === entry.target.id;
-            link.classList.toggle('!border-lime', active);
+            link.classList.toggle('!bg-ink-2', active);
             link.classList.toggle('!text-paper', active);
             if (active) link.setAttribute('aria-current', 'true');
             else link.removeAttribute('aria-current');

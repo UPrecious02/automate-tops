@@ -1,66 +1,71 @@
 order: 5
 title: AI Lead Research & Prospecting
 category: Research and information
-summary: Collects prospects from defined sources, enriches and deduplicates them, and delivers an organised list with the evidence behind every decision.
-seoDescription: An n8n lead research workflow by John Eyitope that collects, enriches, deduplicates and assesses prospects, with evidence for every fit decision.
+workflowName: AI Lead Research & Prospecting
+summary: Finds businesses from a simple form, removes duplicates, researches each website with AI and writes scored leads to Google Sheets.
+seoDescription: An n8n lead research workflow by John Eyitope that discovers businesses, deduplicates them, scores each one with AI and writes leads to Google Sheets.
 status: Demonstration
 accent: lime
-visual: pipeline
 
 problem: >
-  Manual prospecting means hours of searching websites, copying details into a
-  spreadsheet and checking whether a company is already on the list. The result is
-  inconsistent data, duplicates and no record of why a lead was chosen in the first place.
+  Manual prospecting means hours of searching, copying details into a spreadsheet and
+  checking whether a business is already on the list. The result is inconsistent data,
+  duplicates and no record of why a lead was chosen.
 
 solution: >
-  The workflow gathers companies from defined sources and visits each website to
-  collect public business information. An AI step summarises what the company does and
-  checks it against the target profile, quoting the evidence it used. Duplicates are
-  removed and a clean, organised list is written to a spreadsheet or CRM.
+  A run starts from a form with the search criteria. Businesses are discovered through
+  the Google Places API and an AI web search step, then normalised and deduplicated. A
+  loop then handles each business: fetch its website, prepare a research brief, run AI
+  analysis and scoring, build a clean row and append it to Google Sheets.
 
 workflowSteps:
   - stage: TRIGGER
-    title: Search criteria
-    description: A run starts from criteria entered in a form or sheet.
+    title: Research form
+    description: A form collects the search criteria and starts the run.
   - stage: SYSTEM
-    title: Collect sources
-    description: HTTP requests fetch public pages with rate limits and timeouts.
-  - stage: AI
-    title: Enrich and assess
-    description: Each company is summarised and checked against the profile, with quoted evidence.
+    title: Discover businesses
+    description: The Google Places API and an AI web search step find candidate businesses.
   - stage: LOGIC
-    title: Deduplicate and filter
-    description: Records are matched by domain, and weak fits are separated out.
+    title: Normalise and dedupe
+    description: Records from both sources are cleaned and duplicates are removed.
+  - stage: AI
+    title: Research and score
+    description: Each website is fetched, a brief is prepared and AI scores the fit.
   - stage: ACTION
-    title: Organised output
-    description: Clean records are written to the CRM or spreadsheet, ready for outreach.
+    title: Write to Sheets
+    description: A clean row for each business is appended to Google Sheets.
 
 implementation:
-  - Criteria come from a form or sheet, so a non technical person can start a run.
-  - HTTP requests with rate limiting and timeouts so slow sites do not stall the run.
-  - Fit assessment that must quote the evidence it used, so every decision can be checked.
-  - Deduplication by normalised domain before anything is written.
-  - Batch processing with error handling, so one failed site does not stop the whole run.
+  - A form trigger lets anyone start a run without opening n8n.
+  - Two discovery sources, the Google Places API and an AI web search step, widen the search.
+  - A code node normalises records and removes duplicates before any research begins.
+  - A per business loop fetches each website and prepares a research brief for the AI.
+  - AI analysis returns a score, and a code node turns it into a consistent sheet row.
 
-tools: [n8n, OpenAI API, HTTP Request, Google Sheets, HubSpot]
-technicalSkills: [Web data collection, Data enrichment, Deduplication, Evidence based classification, Batch processing]
+tools: [n8n, Google Places API, OpenAI API, HTTP Request, Google Sheets]
+technicalSkills: [API integration, Data normalisation, Deduplication, Batch processing with loops, AI scoring]
 
-validationNote: Built as a demonstration with sample search criteria. The workflow is designed to handle each of these cases.
+validationNote: The workflow structure is shown below. It is designed to handle each of these cases.
 validation:
-  - A company that matches the profile is saved with its supporting evidence.
-  - A company outside the profile is separated with the reason recorded.
-  - A duplicate domain is detected and skipped.
-  - A website that fails to load is logged without stopping the run.
-  - A page with too little information is marked as low confidence.
+  - A business found by both sources becomes one record before research starts.
+  - Each business is researched on its own inside the loop.
+  - Every lead is written to the sheet with its score.
 
 designDecisions:
-  - The model has to cite evidence, which makes weak matches easy to spot and correct.
-  - Only public business information is collected.
+  - Deduplication happens before the AI step, so no research is paid for twice.
+  - Two discovery sources make the list wider than either one alone.
 
 limitations:
-  - Quality depends on the source data. Companies with thin websites receive lower confidence.
-  - Sources must be reviewed against each site's terms before regular use.
+  - Research quality depends on each business's website. Thin websites lead to weaker scores.
+  - The Google Places API charges per request, so search size should be set with costs in mind.
 
 futureImprovements:
-  - Scheduled runs that only add new or changed companies.
-  - A short personalised opening line for outreach, saved as a draft for review.
+  - Scheduled runs that only add new businesses.
+  - Send qualified leads straight to a CRM.
+
+evidence:
+  - src: /images/work/lead-canvas.webp
+    alt: n8n canvas of the lead research workflow from form trigger through discovery, deduplication, a per business loop and Google Sheets
+    caption: The lead research workflow. Form trigger, two discovery sources, normalise and dedupe, then a per business research loop that ends in Google Sheets.
+    width: 1400
+    height: 640

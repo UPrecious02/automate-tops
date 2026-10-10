@@ -1,0 +1,82 @@
+order: 6
+title: Knowledge Base Support Assistant
+category: Research and information
+workflowName: Document Knowledge Base & Telegram Assistant
+summary: Turns business documents added to Google Drive into a searchable knowledge base, then answers customer questions on Telegram from those documents.
+seoDescription: A retrieval workflow by John Eyitope that turns Google Drive documents into a Supabase knowledge base and answers customer questions on Telegram.
+status: Built and tested
+accent: orange
+
+problem: >
+  Support teams answer the same questions about shipping, sizing and policies every
+  day, and the answers already exist in documents that customers never read. Keeping a
+  chatbot accurate usually means editing it by hand every time a policy changes.
+
+solution: >
+  When a file is added to a Google Drive folder, the workflow downloads it, extracts
+  the text from text files or PDFs, checks Supabase to see whether the file is already
+  recorded, then embeds it into a Supabase vector store. A Telegram bot powered by an
+  AI agent searches that store to answer questions, so updating a document updates
+  the answers.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: File added to Drive
+    description: A new file in the Google Drive folder starts the ingestion flow.
+  - stage: LOGIC
+    title: Route by file type
+    description: A switch sends text files and PDFs to the right extractor.
+  - stage: SYSTEM
+    title: Record check
+    description: A Supabase lookup decides whether the file needs a new record.
+  - stage: AI
+    title: Embed and store
+    description: The text is embedded with OpenAI and stored in a Supabase vector store.
+  - stage: ACTION
+    title: Answer on Telegram
+    description: An AI agent searches the store and replies to customer questions.
+
+implementation:
+  - A Google Drive trigger fires on new files, and a code step reads the file extension.
+  - A switch routes text files and PDFs to separate extract nodes, then the results are merged.
+  - A Supabase row lookup decides whether the file needs a new record before it is embedded.
+  - Documents are embedded with OpenAI embeddings and stored in a Supabase vector store.
+  - The Telegram agent uses the vector store as a tool, with memory for follow up questions.
+
+tools: [n8n, Google Drive, Supabase, OpenAI API, Anthropic API, Telegram]
+technicalSkills: [Retrieval augmented generation, Document processing, Vector databases, Conditional routing, Conversational AI agents]
+
+validationNote: Built and run with sample store policy documents. The screenshots below come from those runs.
+validation:
+  - The bot answered a shipping policy question with delivery times, fees, processing rules and tracking from the documents.
+  - A follow up question about shipping to the United States was answered in context.
+  - A size guide question returned measurements and fit advice from the stored documents.
+
+designDecisions:
+  - Answers come from the business's own documents, not the model's general knowledge.
+  - Updating a document in Drive is all it takes to update the bot.
+
+limitations:
+  - Answers are only as good as the documents. Questions the documents do not cover need a clear handoff to a person.
+  - Changes to an existing file need their own update path so old passages are replaced.
+
+futureImprovements:
+  - Hand questions the documents cannot answer to a person.
+  - Show which document each answer came from.
+
+evidence:
+  - src: /images/work/knowledge-canvas.webp
+    alt: n8n canvas with a Google Drive to Supabase ingestion flow and a Telegram AI agent flow
+    caption: Two flows. Document ingestion from Google Drive into Supabase at the top, and the Telegram assistant below.
+    width: 1430
+    height: 610
+  - src: /images/work/knowledge-chat-policy.webp
+    alt: Telegram chat where the bot explains the shipping policy
+    caption: The assistant answering a shipping policy question from the stored documents.
+    width: 689
+    height: 1007
+  - src: /images/work/knowledge-chat-sizes.webp
+    alt: Telegram chat where the bot answers a size guide question
+    caption: A follow up question about size guides, answered from the same knowledge base.
+    width: 697
+    height: 705

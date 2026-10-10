@@ -1,0 +1,52 @@
+---
+// Tools that appear in John's published case studies.
+const tools = [
+  'n8n',
+  'WhatsApp',
+  'Gmail',
+  'Google Calendar',
+  'Google Sheets',
+  'Google Drive',
+  'Airtable',
+  'Twilio',
+  'Supabase',
+  'Telegram',
+  'OpenAI',
+  'Anthropic',
+  'Google Places',
+];
+---
+
+<section class="overflow-hidden border-y border-line bg-lime py-4 text-ink" aria-label="Tools used in these projects">
+  <div class="band flex w-max gap-10">
+    {
+      [0, 1].map((copy) => (
+        <ul class="flex shrink-0 items-center gap-10" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {tools.map((tool) => (
+            <li class="flex items-center gap-10 whitespace-nowrap font-display text-lg font-semibold tracking-tight [font-stretch:110%] sm:text-xl">
+              {tool}
+              <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true" />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .band {
+      animation: marquee 38s linear infinite;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 1.25rem));
+    }
+  }
+</style>

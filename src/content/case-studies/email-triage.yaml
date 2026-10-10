@@ -1,66 +1,77 @@
 order: 3
 title: Email Triage & Follow Up
 category: Business process automation
-summary: Sorts a shared inbox by what each email needs, extracts the key details and creates the next task, so nothing depends on someone remembering.
-seoDescription: John Eyitope's n8n email triage workflow classifies messages, extracts structured details, drafts replies for review and flags threads waiting on a response.
-status: Demonstration
+workflowName: AI Email Executive Assistant
+summary: An inbox assistant that analyses every new email, drafts replies for review, flags urgent messages and sends a daily digest of the last 24 hours.
+seoDescription: John Eyitope's n8n email assistant analyses new Gmail messages, drafts replies for review, sends alerts and delivers a daily AI digest.
+status: Built and tested
 accent: lime
-visual: inbox
 
 problem: >
-  A shared inbox mixes enquiries, invoices, support requests and noise. Someone has to
-  read everything, decide who should handle it and copy details into other tools. Emails
-  that need a reply sit untouched because nobody clearly owns them.
+  A busy inbox mixes enquiries, invoices, support requests and noise. Someone has to
+  read everything, decide what matters and remember to reply. Important emails sit
+  untouched, and there is no quick view of what came in or what is still waiting.
 
 solution: >
-  New emails are filtered, classified by category and urgency, and turned into a
-  structured record. Each category follows its own route: create a task, save a draft
-  reply for review, log the details or alert a person. Anything the system is unsure
-  about goes to a review queue instead of being forced into the wrong category.
+  Each new Gmail message is analysed by an AI model with a structured output parser.
+  Based on that analysis, the workflow creates a draft reply, marks the email as read
+  and sends an alert for anything important. A second flow runs on a schedule,
+  collects the last 24 hours of email and sends a digest grouped by priority,
+  revenue opportunities and messages awaiting a response.
 
 workflowSteps:
   - stage: TRIGGER
     title: New email
-    description: The inbox trigger picks up new messages and skips automated senders.
+    description: The Gmail trigger picks up each new message and extracts its content.
   - stage: AI
-    title: Classify and extract
-    description: Category, urgency, sender, request and deadline are returned as one JSON record.
+    title: Analyse
+    description: An AI model analyses the email and an output parser returns a fixed structure.
   - stage: LOGIC
-    title: Confidence and rules
-    description: Low confidence results go to review. Everything else follows its category route.
-  - stage: SYSTEM
-    title: Tasks and records
-    description: Details are logged to a sheet and tasks are created for the right person.
+    title: Decide
+    description: If nodes decide whether a draft reply and an alert are needed.
   - stage: ACTION
-    title: Draft, notify, follow up
-    description: Replies are saved as drafts, the team is notified, and silent threads are flagged later.
+    title: Draft and alert
+    description: A draft is created, the email is marked as read and alerts go out.
+  - stage: SYSTEM
+    title: Daily digest
+    description: A schedule fetches the last 24 hours of email, summarises it with AI and sends the digest.
 
 implementation:
-  - Rule based filters remove newsletters and automated senders before any AI call is made.
-  - Classification prompt with fixed categories and a required confidence value.
-  - Extraction of sender, company, request and deadline into one consistent JSON shape.
-  - Draft replies are saved for a person to approve and are never sent automatically.
-  - A scheduled check flags threads that still have no reply after a set period.
+  - Email content is extracted into clean fields before the AI step.
+  - An output parser forces the analysis into a fixed structure, so later steps can rely on it.
+  - Replies are saved as Gmail drafts and are never sent automatically.
+  - Important emails trigger a separate alert email.
+  - The digest flow aggregates the day's emails, generates a summary with AI, sends it and logs that it was sent.
 
-tools: [n8n, OpenAI API, Gmail, Google Sheets, Slack]
-technicalSkills: [Text classification, Structured extraction, Confidence based routing, Scheduled workflows, Human in the loop design]
+tools: [n8n, OpenAI API, Gmail]
+technicalSkills: [Email classification, Structured output parsing, Human in the loop design, Scheduled workflows, AI summarisation]
 
-validationNote: Built as a demonstration with sample emails. The workflow is designed to handle each of these cases.
+validationNote: Built and run on a real inbox. The screenshots below come from those runs.
 validation:
-  - A clear sales enquiry is logged, assigned and given a draft reply.
-  - An invoice email is recorded with its sender and due date.
-  - An ambiguous email is sent to the review queue.
-  - A newsletter is filtered out before reaching the AI step.
-  - A thread with no reply is flagged on the next scheduled check.
+  - The scheduled digest ran and summarised the previous 24 hours of email.
+  - The digest separated critical and high priority emails, revenue opportunities and messages awaiting a response.
+  - New emails were processed through analysis, drafting and alerts.
 
 designDecisions:
-  - Cheap rule based filtering runs first, so the AI step only sees emails that need judgement.
-  - Replies are drafted, not sent, so a person always controls what leaves the business.
+  - Replies are drafted, not sent, so a person always controls what leaves the inbox.
+  - A structured output parser keeps the AI's answer predictable enough to branch on.
 
 limitations:
-  - Categories are fixed per business and need reviewing as the inbox changes over time.
-  - Long email threads are summarised from the latest message, so older context can be missed.
+  - The digest currently arrives as plain text, so formatting markers show in the email. An HTML version is the next fix.
+  - Priority rules need reviewing as the inbox changes over time.
 
 futureImprovements:
-  - Category specific reply templates written with the team.
-  - A weekly summary of volume by category for the business owner.
+  - Send the digest as formatted HTML.
+  - Add reply templates for the most common email types.
+
+evidence:
+  - src: /images/work/email-canvas.webp
+    alt: n8n canvas with a real time email analysis flow and a scheduled daily digest flow
+    caption: Two flows. Real time analysis of each new email at the top, and the scheduled daily digest below.
+    width: 1460
+    height: 560
+  - src: /images/work/email-digest.webp
+    alt: Gmail message showing the daily email digest with counts by priority and category
+    caption: A daily digest generated by the workflow, with a quick count by priority and category.
+    width: 1600
+    height: 721

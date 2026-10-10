@@ -1,69 +1,86 @@
 order: 1
 title: Conversational Ordering & Support
 category: Customer communication
-summary: A chat based ordering and support flow that understands what a customer wants, checks real order data and hands anything unusual to a person.
-seoDescription: How John Eyitope designed a conversational ordering and support workflow in n8n that classifies requests, validates order details and escalates exceptions.
-status: Demonstration
+workflowName: Restaurant WhatsApp Ordering
+summary: A WhatsApp ordering assistant for a restaurant. It takes orders from the live menu, saves them to a sheet, handles payment receipts and confirms paid orders automatically.
+seoDescription: How John Eyitope built a WhatsApp ordering assistant in n8n that takes orders from a live menu, records them in Google Sheets and confirms payments.
+status: Built and tested
 accent: lime
-visual: chat
 
 problem: >
-  Businesses that take orders over chat end up with someone reading every message,
-  copying details into a spreadsheet and answering the same order status questions
-  again and again. Messages that arrive after hours wait until morning, and details
-  get lost between the conversation and the order record.
+  Restaurants that take orders on WhatsApp usually have someone reading every chat,
+  quoting prices, writing orders down and checking bank transfer receipts by hand.
+  Orders slip through during busy hours, and the owner has no single record of what
+  was ordered and what has been paid.
 
 solution: >
-  Every incoming message enters one workflow. An AI step works out what the customer
-  wants and pulls the order details into a structured record. Workflow logic checks
-  that nothing required is missing before any order is written, replies with a
-  confirmation or status update, and sends complaints or unclear requests to a person
-  with the full context attached.
+  Customer messages go to an AI agent that reads the live menu from Google Sheets,
+  takes the order, asks about pickup or delivery and sends the bill. Completed orders
+  are parsed and saved to an orders sheet. Receipt images skip the agent and go
+  straight to the owner. When the owner marks an order as Paid, the customer is told
+  automatically, and a summary of the day's orders is sent on a schedule.
 
 workflowSteps:
   - stage: TRIGGER
     title: Message received
-    description: A webhook receives the customer message, sender and channel.
-  - stage: AI
-    title: Intent and details
-    description: The model classifies the request and extracts items, quantities and delivery details as JSON.
+    description: The WhatsApp trigger receives the message, and a filter keeps text and image messages.
   - stage: LOGIC
-    title: Validate and route
-    description: A switch routes by intent. Required fields are checked before anything is saved.
+    title: Receipt or conversation
+    description: Images are treated as payment receipts and go to the owner. Text goes to the agent.
+  - stage: AI
+    title: Ordering agent
+    description: An agent with conversation memory reads the menu sheet, takes the order and prepares the bill.
   - stage: SYSTEM
-    title: Order data
-    description: The order is created or looked up in the order sheet.
+    title: Orders sheet
+    description: Completed orders are parsed and saved to Google Sheets.
   - stage: ACTION
-    title: Reply or escalate
-    description: The customer gets a confirmation or status reply. Exceptions go to staff with context.
+    title: Confirm and notify
+    description: The customer gets a confirmation, and a Paid status update notifies both owner and customer.
 
 implementation:
-  - Webhook trigger with a normalisation step so messages from different channels arrive in one consistent shape.
-  - Structured output prompt that returns intent, line items and a confidence flag as JSON.
-  - Switch node with separate paths for new orders, status requests, product questions and complaints.
-  - Missing field check that asks the customer for the detail instead of guessing it.
-  - Escalation branch that posts a short conversation summary to a staff channel.
+  - A filter passes only text and image messages, and an If node separates receipt images from normal conversation.
+  - Receipt images are forwarded to the owner with the order details, and the customer gets an acknowledgement.
+  - The AI agent uses the menu sheet as a tool and keeps the order context across messages with simple memory.
+  - An Order Complete check decides when to parse the order and save it with an append or update step.
+  - A Google Sheets trigger watches for status changes and sends payment confirmations when an order is marked Paid.
+  - A scheduled flow reads all orders, builds a daily summary and sends it on WhatsApp.
 
-tools: [n8n, OpenAI API, Webhooks, Google Sheets, Slack]
-technicalSkills: [Intent classification, Structured data extraction, Conditional routing, API integration, Exception handling]
+tools: [n8n, WhatsApp Business API, Anthropic API, Google Sheets]
+technicalSkills: [AI agents with tools, Image and text routing, Event driven triggers, Data parsing, Scheduled reporting]
 
-validationNote: Built as a demonstration with sample conversations. The workflow is designed to handle each of these cases.
+validationNote: Built and run end to end with test orders. The screenshots below come from those runs.
 validation:
-  - A complete order message becomes a saved order and a confirmation reply.
-  - An order missing delivery details triggers a question back to the customer.
-  - An order status request returns the current status from the order data.
-  - A complaint skips automation and goes straight to a person.
-  - A message the system cannot classify is escalated rather than answered.
+  - A test customer ordered from the menu and received an itemised bill with the takeaway pack added for pickup.
+  - Choosing pickup moved the conversation straight to payment details.
+  - Test orders were saved to the orders sheet with customer, order type, total and payment status.
+  - Orders covered both pickup and delivery.
 
 designDecisions:
-  - The AI only classifies and extracts. Prices, stock and totals always come from the data source, never from the model.
-  - Required fields are validated in workflow logic, not left to the prompt.
-  - Complaints are never handled automatically, because tone matters more than speed there.
+  - Receipt images bypass the AI agent entirely, so payments always reach a person.
+  - Payment is confirmed by the owner updating the sheet, not by the AI reading a receipt.
+  - The menu lives in a sheet the restaurant can edit without touching the workflow.
 
 limitations:
-  - It handles the order types it was configured for. Unusual requests are routed to a person by design.
-  - Reply accuracy depends on the product and order data being kept current.
+  - The agent works out the bill from menu prices, so totals should be checked until a code step recalculates them.
+  - Payment confirmation depends on staff updating the order status.
 
 futureImprovements:
-  - Add a payment link step once an order is confirmed.
-  - Add order history lookup for returning customers.
+  - Recalculate every total in a code step before the bill is sent.
+  - Add delivery fees by location.
+
+evidence:
+  - src: /images/work/ordering-canvas.webp
+    alt: n8n canvas of the restaurant ordering workflow with receipt handling, the AI agent, paid status notifications and a daily summary
+    caption: The full workflow. Receipt handling at the top, the ordering agent in the middle, paid status notifications and the daily summary below.
+    width: 1030
+    height: 580
+  - src: /images/work/ordering-chat.webp
+    alt: WhatsApp conversation where the assistant lists the order, adds a takeaway pack and shares payment details
+    caption: A test order on WhatsApp. The agent itemises the order, adds the takeaway pack for pickup and sends payment details.
+    width: 674
+    height: 1280
+  - src: /images/work/ordering-sheet.webp
+    alt: Google Sheets orders table with order summary, order type, total and Paid status
+    caption: Orders saved to Google Sheets with order type, total and payment status. Phone numbers are blurred.
+    width: 1600
+    height: 473

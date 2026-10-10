@@ -3,19 +3,19 @@
 /* Brand tokens. Tailwind v4 turns these into utilities such as bg-ink, text-lime, font-display. */
 @theme {
   --color-ink: #101010;
-  --color-ink-2: #181818;
-  --color-ink-3: #222222;
-  --color-line: #2a2a2a;
+  --color-ink-2: #171717;
+  --color-ink-3: #1f1f1f;
+  --color-line: #2b2b2b;
   --color-paper: #f5f1e8;
-  --color-paper-2: #ebe5d8;
-  --color-paper-line: #d8d0bf;
+  --color-paper-2: #ece6d9;
+  --color-paper-line: #d9d1c0;
   --color-lime: #c5f467;
   --color-lime-dim: #a9d94c;
   --color-orange: #ff784f;
   --color-mute: #8f8f8f; /* secondary text on dark, 6:1 contrast */
   --color-mute-dark: #57534d; /* secondary text on light, 7:1 contrast */
 
-  --font-display: 'Archivo Variable', 'Arial Narrow', sans-serif;
+  --font-display: 'Archivo Variable', 'Arial', sans-serif;
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
@@ -30,7 +30,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 6rem;
   }
 
   body {
@@ -59,50 +59,60 @@
 @layer components {
   .container-x {
     width: 100%;
-    max-width: 84rem;
+    max-width: 82rem;
     margin-inline: auto;
     padding-inline: clamp(1rem, 4vw, 2.5rem);
   }
 
   .section-y {
-    padding-block: clamp(4.5rem, 10vw, 8.5rem);
+    padding-block: clamp(4.5rem, 10vw, 8rem);
   }
 
-  /* Oversized condensed headings */
+  /* Wide, confident headings in sentence case */
   .display {
     font-family: var(--font-display);
-    font-stretch: 68%;
-    font-weight: 800;
-    line-height: 0.88;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-stretch: 112%;
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
     overflow-wrap: break-word;
+    text-wrap: balance;
   }
 
   .display-xl {
-    font-size: clamp(3.1rem, 11.5vw, 10.5rem);
+    font-size: clamp(2.6rem, 7.4vw, 6.4rem);
   }
 
   .display-lg {
-    font-size: clamp(2.6rem, 8vw, 6.5rem);
+    font-size: clamp(2.1rem, 5vw, 4.2rem);
   }
 
   .display-md {
-    font-size: clamp(2rem, 5.2vw, 3.75rem);
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
   }
 
-  /* Small technical labels */
   .label {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .lead {
-    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-    line-height: 1.6;
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+    line-height: 1.65;
+  }
+
+  /* n8n style canvas background */
+  .canvas-bg {
+    background-image: radial-gradient(rgb(255 255 255 / 0.075) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+
+  .canvas-bg-light {
+    background-image: radial-gradient(rgb(16 16 16 / 0.11) 1px, transparent 1.2px);
+    background-size: 22px 22px;
   }
 
   .btn {
@@ -110,19 +120,16 @@
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    min-height: 3.25rem;
-    padding: 0.9rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    min-height: 3.1rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 999px;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.95rem;
     border: 1.5px solid currentColor;
     transition:
       background-color 0.2s ease,
       color 0.2s ease,
-      border-color 0.2s ease,
-      transform 0.2s ease;
+      border-color 0.2s ease;
   }
 
   .btn svg {
@@ -168,25 +175,69 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.35rem 0.65rem;
+    padding: 0.32rem 0.7rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.04em;
     border: 1px solid currentColor;
     border-radius: 999px;
     white-space: nowrap;
   }
 
-  .grid-bg {
-    background-image:
-      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-    background-size: 3rem 3rem;
+  /* Node card with connection ports, like a node on a workflow canvas */
+  .node {
+    position: relative;
+    border-radius: 1.25rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink-2);
   }
 
-  .dot-bg {
-    background-image: radial-gradient(rgb(16 16 16 / 0.12) 1px, transparent 1px);
-    background-size: 1.25rem 1.25rem;
+  .port-l,
+  .port-r {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 999px;
+    background: var(--color-ink);
+    border: 2px solid var(--port, var(--color-mute));
+    z-index: 2;
+  }
+
+  .port-l {
+    left: -7px;
+  }
+
+  .port-r {
+    right: -7px;
+  }
+
+  /* Window frame for screenshots */
+  .frame {
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-ink-2);
+  }
+
+  .frame-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .frame-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .frame-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--color-line);
   }
 }
 
@@ -194,7 +245,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .js [data-reveal] {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(22px);
     transition:
       opacity 0.7s ease,
       transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);

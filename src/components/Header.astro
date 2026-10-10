@@ -10,10 +10,13 @@ const links = [
 ];
 ---
 
-<header id="site-header" class="fixed inset-x-0 top-0 z-50 border-b border-transparent bg-ink transition-colors duration-300">
-  <div class="container-x flex h-16 items-center justify-between md:h-[4.5rem]">
-    <a href="/" class="relative z-10 -my-2 py-2" aria-label="John Eyitope, home">
-      <Logo size={34} />
+<header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-4">
+  <div
+    id="site-header"
+    class="mx-auto flex h-14 max-w-[82rem] items-center justify-between rounded-full border border-line bg-ink/90 pr-2 pl-4 backdrop-blur-md transition-colors duration-300 md:h-16 md:pl-5"
+  >
+    <a href="/" class="relative z-10 py-2" aria-label="John Eyitope, home">
+      <Logo size={30} />
     </a>
 
     <nav aria-label="Main" class="hidden md:block">
@@ -21,18 +24,15 @@ const links = [
         {
           links.map((link) => (
             <li>
-              <a
-                href={link.href}
-                class="label block px-4 py-3 text-paper/80 transition-colors hover:text-lime"
-              >
+              <a href={link.href} class="block rounded-full px-4 py-2.5 text-sm font-medium text-paper/75 transition-colors hover:bg-ink-3 hover:text-paper">
                 {link.label}
               </a>
             </li>
           ))
         }
-        <li class="ml-3">
-          <a href="/#contact" class="btn btn-lime !min-h-11 !px-5 !py-2.5 !text-[0.75rem]">
-            Discuss a project
+        <li class="ml-2">
+          <a href="/#contact" class="btn btn-lime !min-h-11 !px-5 !py-2 !text-sm">
+            Discuss a project <Icon name="arrow-right" size={16} />
           </a>
         </li>
       </ul>
@@ -41,31 +41,31 @@ const links = [
     <button
       id="menu-toggle"
       type="button"
-      class="relative z-10 -mr-2 inline-flex h-11 w-11 items-center justify-center text-paper md:hidden"
+      class="relative z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-ink-3 text-paper md:hidden"
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
       <span class="sr-only" data-menu-label>Open menu</span>
-      <span data-icon-open><Icon name="menu" size={24} /></span>
-      <span data-icon-close class="hidden"><Icon name="close" size={24} /></span>
+      <span data-icon-open><Icon name="menu" size={20} /></span>
+      <span data-icon-close class="hidden"><Icon name="close" size={20} /></span>
     </button>
   </div>
 
-  <div id="mobile-menu" class="fixed inset-0 top-16 hidden flex-col bg-ink md:hidden" hidden>
-    <nav aria-label="Mobile" class="container-x flex flex-1 flex-col justify-between pt-8 pb-10">
+  <div id="mobile-menu" class="mx-auto mt-2 hidden max-w-[82rem] flex-col rounded-3xl border border-line bg-ink p-3 md:hidden" hidden>
+    <nav aria-label="Mobile">
       <ul class="flex flex-col">
         {
           links.map((link, i) => (
-            <li class="border-b border-line">
-              <a href={link.href} class="flex items-baseline justify-between py-5" data-menu-link>
-                <span class="display text-[2.6rem]">{link.label}</span>
-                <span class="label text-mute">0{i + 1}</span>
+            <li>
+              <a href={link.href} class="flex items-center justify-between rounded-2xl px-4 py-4 hover:bg-ink-3" data-menu-link>
+                <span class="font-display text-2xl font-semibold tracking-tight [font-stretch:110%]">{link.label}</span>
+                <span class="font-mono text-xs text-mute">0{i + 1}</span>
               </a>
             </li>
           ))
         }
       </ul>
-      <a href="/#contact" class="btn btn-lime w-full" data-menu-link>
+      <a href="/#contact" class="btn btn-lime mt-3 w-full" data-menu-link>
         Discuss a project <Icon name="arrow-right" />
       </a>
     </nav>
@@ -73,17 +73,8 @@ const links = [
 </header>
 
 <script>
-  const header = document.getElementById('site-header');
   const toggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-menu');
-
-  if (header) {
-    const onScroll = () => {
-      header.classList.toggle('!border-line', window.scrollY > 8);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
 
   if (toggle && menu) {
     const label = toggle.querySelector('[data-menu-label]');
@@ -95,7 +86,6 @@ const links = [
       menu.hidden = !open;
       menu.classList.toggle('hidden', !open);
       menu.classList.toggle('flex', open);
-      document.body.style.overflow = open ? 'hidden' : '';
       if (label) label.textContent = open ? 'Close menu' : 'Open menu';
       iconOpen?.classList.toggle('hidden', open);
       iconClose?.classList.toggle('hidden', !open);

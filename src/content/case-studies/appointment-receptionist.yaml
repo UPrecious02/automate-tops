@@ -1,67 +1,86 @@
 order: 2
 title: AI Appointment Receptionist
 category: Customer communication
-summary: Answers booking enquiries, checks real calendar availability, books the confirmed slot and hands tricky requests to staff.
-seoDescription: An n8n appointment workflow by John Eyitope that understands booking requests, checks calendar availability and escalates cancellations to staff.
-status: Demonstration
+workflowName: WhatsApp AI Receptionist
+summary: A WhatsApp receptionist for a dental clinic. It answers service and pricing questions, checks real calendar availability and books appointments once the patient confirms.
+seoDescription: An n8n WhatsApp receptionist by John Eyitope that answers clinic questions, checks Google Calendar availability and books confirmed appointments.
+status: Built and tested
 accent: orange
-visual: calendar
 
 problem: >
-  Service businesses lose bookings when enquiries arrive while staff are busy or the
-  business is closed. Agreeing a time takes several messages, pulls staff away from
-  the customers in front of them, and double bookings happen when the conversation and
-  the calendar drift out of sync.
+  Clinics lose bookings when enquiries arrive while staff are busy or the clinic is
+  closed. Agreeing a time takes several messages, pulls staff away from the patients
+  in front of them, and double bookings happen when the chat and the calendar drift
+  out of sync.
 
 solution: >
-  The workflow reads each enquiry, identifies the service and the preferred time,
-  checks the calendar for open slots and offers real options. A booking is created only
-  after the customer confirms a specific slot. Cancellations, reschedules and anything
-  sensitive are passed to staff with a short summary.
+  Patient messages go to an AI agent that answers from a pricing knowledge base in
+  Google Sheets and works out the service, date and time the patient wants. Its reply
+  is parsed into structured fields, and the workflow decides what happens next:
+  escalate to staff, check the calendar, offer other times when a slot is taken, or
+  book once the patient confirms. Every conversation is logged to a sheet.
 
 workflowSteps:
   - stage: TRIGGER
-    title: Enquiry arrives
-    description: A new booking message reaches the workflow through a webhook.
+    title: WhatsApp message
+    description: A patient message reaches the workflow through the WhatsApp trigger.
   - stage: AI
-    title: Understand the request
-    description: The model identifies the service and turns phrases like next Tuesday afternoon into a date range.
+    title: Receptionist agent
+    description: An agent with memory, a pricing sheet and calendar access replies and returns structured fields.
   - stage: LOGIC
-    title: Availability rules
-    description: Business hours, service length and buffers between appointments decide which slots are valid.
+    title: Escalate or continue
+    description: The parsed fields decide escalation, slot checks and whether the patient has confirmed.
   - stage: SYSTEM
-    title: Calendar
-    description: Free slots are read from the calendar, and the event is written only after confirmation.
+    title: Calendar check
+    description: Google Calendar is checked for the requested time and free slots are worked out.
   - stage: ACTION
-    title: Confirm or hand off
-    description: The customer receives options or a confirmation. Anything outside the rules goes to staff.
+    title: Book and reply
+    description: The event is created with patient and service details, then a confirmation goes out.
 
 implementation:
-  - Date and time parsing that converts natural phrases into a concrete search window.
-  - Free slot calculation that respects service duration and the buffer between appointments.
-  - A booking is written only after the customer confirms one specific slot.
-  - Confirmation message and calendar event are created in the same run so they never disagree.
-  - Handoff branch for cancellations, reschedules and sensitive questions.
+  - The agent reads clinic prices from a Google Sheets knowledge base instead of hard coded text.
+  - A code node parses the agent's output into fields the workflow can branch on.
+  - Escalation sends the patient a handoff message and notifies the clinic team on WhatsApp.
+  - Availability is checked against Google Calendar before a time is confirmed, and taken slots return alternatives.
+  - The booking is created only after the patient replies YES or CONFIRM, with a reminder 30 minutes before.
+  - Every conversation is appended to a log sheet.
 
-tools: [n8n, OpenAI API, Google Calendar, Webhooks, Gmail]
-technicalSkills: [Natural language date parsing, Availability logic, Calendar API integration, Conversation state handling, Escalation design]
+tools: [n8n, WhatsApp Business API, Anthropic API, Google Calendar, Google Sheets]
+technicalSkills: [AI agent design, Structured output parsing, Availability logic, Calendar API integration, Escalation design]
 
-validationNote: Built as a demonstration with a sample calendar and sample enquiries. The workflow is designed to handle each of these cases.
+validationNote: Built and run with a test clinic, Bright Smile Dental Clinic, and test patients. The screenshots below come from those runs.
 validation:
-  - A clear booking request receives available options and a confirmation.
-  - A vague time preference is narrowed down with a follow up question.
-  - A requested slot that is already taken returns the nearest open alternatives.
-  - A request outside business hours is offered valid times instead.
-  - A cancellation is handed to staff instead of being processed automatically.
+  - The receptionist greeted a patient and listed services and prices from the knowledge base.
+  - A request for a time that was already booked returned the open slots for that day.
+  - After the patient confirmed, the appointment was created in Google Calendar with the service, time and booking source.
 
 designDecisions:
-  - The model never decides availability. The calendar is the single source of truth.
-  - Bookings need explicit confirmation, which prevents accidental appointments.
+  - The model never decides availability. Google Calendar is the single source of truth.
+  - Bookings need an explicit YES or CONFIRM, which prevents accidental appointments.
+  - The agent's reply is parsed into fields, so routing never depends on reading free text.
 
 limitations:
-  - Designed around one calendar per service. Scheduling across several staff members needs extra rules.
-  - Time zone handling assumes the business and its customers share one time zone.
+  - The test booking shows the phone field as unknown. The patient's WhatsApp number should be written to the event automatically.
+  - Weekday phrases such as "Tuesday by 11" need careful date resolution, so this is the area to test most before going live.
+  - Designed around one clinic calendar.
 
 futureImprovements:
-  - Send reminder messages before each appointment.
-  - Support several staff calendars with individual availability.
+  - Write the patient's WhatsApp number to every event.
+  - Send reminder messages on WhatsApp before each appointment.
+
+evidence:
+  - src: /images/work/appointment-canvas.webp
+    alt: n8n canvas of the WhatsApp receptionist with AI agent, escalation branch, calendar availability checks and booking
+    caption: The full workflow. The AI agent and its tools on the left, then escalation, slot validation, availability checks and booking.
+    width: 1523
+    height: 644
+  - src: /images/work/appointment-chat.webp
+    alt: WhatsApp chat where the receptionist welcomes the patient and lists dental services with price ranges
+    caption: The receptionist greeting a patient and listing services and prices from the knowledge base.
+    width: 1283
+    height: 814
+  - src: /images/work/appointment-calendar.webp
+    alt: Google Calendar event for a dental X ray booked via the WhatsApp AI receptionist
+    caption: A test booking created by the workflow, with patient, service, time and booking source.
+    width: 745
+    height: 658

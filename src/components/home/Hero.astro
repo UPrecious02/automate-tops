@@ -1,72 +1,133 @@
 ---
 import Icon from '../Icon.astro';
 import Portrait from '../Portrait.astro';
-import SystemFlow from './SystemFlow.astro';
 import { site } from '../../data/site';
 
-const log = [
-  { mark: '✓', text: 'webhook.received', tone: 'text-lime' },
-  { mark: '✓', text: 'intent.classified', tone: 'text-lime' },
-  { mark: '→', text: 'route: new_order', tone: 'text-paper' },
-  { mark: '✓', text: 'record.saved', tone: 'text-lime' },
-  { mark: '●', text: 'reply.sent', tone: 'text-orange' },
+const flow = [
+  { stage: 'Input', note: 'A message, email, form or event arrives', tone: 'border-orange text-orange', port: '#FF784F' },
+  { stage: 'AI', note: 'Reads and classifies, only where it helps', tone: 'border-dashed border-paper/50 text-paper', port: '#8F8F8F', optional: true },
+  { stage: 'Logic', note: 'Rules, checks and routing decide the path', tone: 'border-line text-paper', port: '#8F8F8F' },
+  { stage: 'System', note: 'Sheets, CRMs, calendars and databases', tone: 'border-line text-paper', port: '#8F8F8F' },
+  { stage: 'Action', note: 'Reply, book, notify or hand to a person', tone: 'border-lime text-lime', port: '#C5F467' },
 ];
 ---
 
-<section class="grid-bg relative overflow-hidden border-b border-line" aria-labelledby="hero-title">
+<section class="canvas-bg relative overflow-hidden" aria-labelledby="hero-title">
   <div class="container-x pt-10 pb-16 md:pt-16 md:pb-24">
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-reveal>
-      <span class="label text-lime">{site.name}</span>
-      <span class="h-px w-8 bg-line" aria-hidden="true"></span>
-      <span class="label text-mute">{site.title}</span>
-    </div>
+    <div class="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-7" data-reveal>
+        <p class="inline-flex items-center gap-2.5 rounded-full border border-line bg-ink-2 px-3.5 py-1.5 font-mono text-xs text-paper/85">
+          <span class="relative flex h-2 w-2" aria-hidden="true">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime opacity-60 motion-reduce:hidden"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-lime"></span>
+          </span>
+          {site.name} · {site.title}
+        </p>
 
-    <h1 id="hero-title" class="display display-xl mt-6 md:mt-8" data-reveal style="--reveal-delay:80ms">
-      <span class="block">Less manual work.</span>
-      <span class="block">More systems</span>
-      <span class="block">that <span class="relative inline-block text-ink"><span class="absolute inset-x-[-0.06em] inset-y-[0.06em] bg-lime" aria-hidden="true"></span><span class="relative">move.</span></span></span>
-    </h1>
+        <h1 id="hero-title" class="display display-xl mt-7">
+          Less manual work. <span class="text-lime">More systems that move.</span>
+        </h1>
 
-    <div class="mt-10 grid gap-12 md:mt-14 lg:grid-cols-12 lg:gap-10">
-      <div class="lg:col-span-6 xl:col-span-5" data-reveal style="--reveal-delay:160ms">
-        <p class="lead max-w-xl text-paper/85">
+        <p class="lead mt-7 max-w-xl text-paper/80">
           I connect AI, APIs and business software to automate repetitive work, improve operational follow through and
           turn incoming information into useful action.
         </p>
-        <div class="mt-8 flex flex-col gap-3 xs:flex-row">
+
+        <div class="mt-9 flex flex-col gap-3 xs:flex-row">
           <a href="#work" class="btn btn-lime">Explore selected work <Icon name="arrow-right" /></a>
           <a href="#contact" class="btn btn-ghost">Discuss a project</a>
         </div>
-        <SystemFlow class="mt-12 max-w-md" />
       </div>
 
-      <div class="relative lg:col-span-6 lg:col-start-7 xl:col-span-6 xl:col-start-7" data-reveal style="--reveal-delay:240ms">
-        <div class="grid grid-cols-12 items-end gap-3">
-          <Portrait eager class="col-span-12 aspect-[5/4] rounded-sm sm:col-span-7 sm:aspect-[4/5]" />
-          <div class="col-span-12 grid grid-cols-2 gap-3 sm:col-span-5 sm:flex sm:flex-col">
-            <div class="rounded-sm border border-line bg-ink-2 p-3 sm:p-4">
-              <p class="label !text-[0.6rem] text-mute">Execution log</p>
-              <ul class="mt-3 space-y-1.5 font-mono text-[0.62rem] sm:text-xs" aria-label="Example workflow run">
-                {
-                  log.map((line) => (
-                    <li class="flex gap-2 overflow-hidden whitespace-nowrap">
-                      <span class={line.tone} aria-hidden="true">{line.mark}</span>
-                      <span class="truncate text-paper/80">{line.text}</span>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
-            <div class="rounded-sm bg-orange p-3 text-ink sm:p-4">
-              <p class="label !text-[0.6rem]">Credential</p>
-              <p class="mt-2 font-display text-lg leading-none font-extrabold [font-stretch:70%] sm:text-2xl">
-                n8n certified
-              </p>
-              <p class="mt-1 font-mono text-[0.6rem] sm:text-[0.68rem]">{site.certificate.issued}</p>
-            </div>
+      <div class="relative mx-auto w-full max-w-[26rem] lg:col-span-5 lg:max-w-none" data-reveal style="--reveal-delay:150ms">
+        <div class="node p-2.5" style="--port:#C5F467">
+          <span class="port-l" style="--port:#FF784F" aria-hidden="true"></span>
+          <span class="port-r" aria-hidden="true"></span>
+          <div class="flex items-center justify-between px-2 pt-1 pb-2.5 font-mono text-[0.7rem] text-mute">
+            <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-lime" aria-hidden="true"></span>john_eyitope</span>
+            <span>automation.builder</span>
           </div>
+          <Portrait eager class="aspect-[4/5] rounded-[0.9rem]" />
+        </div>
+
+        <div class="absolute top-[18%] -left-2 rounded-2xl border border-orange/60 bg-ink px-3.5 py-2.5 shadow-2xl sm:-left-8" aria-hidden="true">
+          <p class="font-mono text-[0.62rem] text-orange">TRIGGER</p>
+          <p class="mt-0.5 text-sm font-semibold">New enquiry</p>
+        </div>
+        <div class="absolute -right-2 bottom-[16%] rounded-2xl border border-lime/60 bg-ink px-3.5 py-2.5 shadow-2xl sm:-right-6" aria-hidden="true">
+          <p class="font-mono text-[0.62rem] text-lime">ACTION</p>
+          <p class="mt-0.5 flex items-center gap-1.5 text-sm font-semibold"><Icon name="check" size={14} class="text-lime" /> Booked</p>
         </div>
       </div>
     </div>
+
+    <figure class="mt-16 md:mt-24" data-reveal>
+      <ol class="flex items-stretch" aria-label="How a workflow moves: input, AI, logic, system, action">
+        {
+          flow.map((step, i) => (
+            <>
+              <li class="min-w-0 flex-1">
+                <div class:list={['node h-full px-2 py-3 text-center sm:px-4 sm:py-4 md:text-left', step.optional && '!border-dashed']} style={`--port:${step.port}`}>
+                  {i > 0 && <span class="port-l hidden sm:block" aria-hidden="true" />}
+                  {i < flow.length - 1 && <span class="port-r hidden sm:block" aria-hidden="true" />}
+                  <p class:list={['font-mono text-[0.62rem] font-semibold tracking-wider uppercase sm:text-xs', step.tone.split(' ').filter((c) => c.startsWith('text-'))]}>
+                    {step.stage}
+                    {step.optional && <span class="text-lime">*</span>}
+                  </p>
+                  <p class="mt-1.5 hidden text-sm leading-snug text-paper/70 md:block">{step.note}</p>
+                </div>
+              </li>
+              {i < flow.length - 1 && (
+                <li class="wire relative w-3 shrink-0 self-center sm:w-6 md:w-10" aria-hidden="true">
+                  <span class="block h-px w-full bg-line" />
+                  <span class="wire-dot" style={`--d:${i * 0.45}s`} />
+                </li>
+              )}
+            </>
+          ))
+        }
+      </ol>
+      <figcaption class="mt-4 font-mono text-[0.7rem] leading-relaxed text-mute">
+        <span class="text-lime">*</span> AI is added only where it improves a decision. Plenty of good workflows run on clear rules alone.
+      </figcaption>
+    </figure>
   </div>
 </section>
+
+<style>
+  .wire-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
+    border-radius: 999px;
+    background: var(--color-lime);
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .wire-dot {
+      animation: travel 2.4s ease-in-out infinite;
+      animation-delay: var(--d);
+    }
+  }
+
+  @keyframes travel {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      left: calc(100% - 6px);
+      opacity: 0;
+    }
+  }
+</style>

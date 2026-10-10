@@ -17,7 +17,8 @@ const caseStudies = defineCollection({
     // Be honest about evidence: only use "Client deployment" when it really happened.
     status: z.enum(['Demonstration', 'Built and tested', 'Client deployment']),
     accent: z.enum(['lime', 'orange']),
-    visual: z.enum(['chat', 'calendar', 'inbox', 'timeline', 'pipeline']),
+    // Name shown in the window frame around the workflow screenshot.
+    workflowName: z.string(),
     problem: z.string(),
     solution: z.string(),
     workflowSteps: z
