@@ -1,0 +1,67 @@
+order: 4
+title: Med Spa Customer Follow Up & Recovery
+category: Customer communication
+summary: Timed aftercare messages, missed appointment recovery and a clear view for staff of which clients need attention.
+seoDescription: A customer follow up and recovery workflow by John Eyitope that sends aftercare, rebooks missed appointments and alerts staff to client concerns.
+status: Demonstration
+accent: orange
+visual: timeline
+
+problem: >
+  After a treatment, clients need aftercare instructions and a check in, and missed
+  appointments need a quick, polite attempt to rebook. When this depends on staff
+  memory, follow ups are inconsistent, clients drift away, and nobody can easily see
+  which clients are waiting on a response.
+
+solution: >
+  Appointment status changes start timed message sequences. A completed treatment
+  starts aftercare and a later check in. A missed appointment starts a rebooking
+  message. Replies are read and sorted so concerns reach staff quickly, and every
+  message sent or received is logged where the team can see it.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: Appointment status changes
+    description: A completed, missed or cancelled appointment starts the workflow.
+  - stage: LOGIC
+    title: Choose the sequence
+    description: Each outcome follows its own path with its own timing.
+  - stage: ACTION
+    title: Timed messages
+    description: Aftercare, check in and rebooking messages go out at set intervals.
+  - stage: AI
+    title: Read replies
+    description: Replies are sorted into rebooking intent, general questions and concerns.
+  - stage: SYSTEM
+    title: Staff visibility
+    description: Every touchpoint is logged, and concerns alert staff immediately.
+
+implementation:
+  - Status based branching so each appointment outcome starts the correct sequence.
+  - Wait steps that time aftercare and check in messages after the visit.
+  - Reply classification that separates rebooking intent from questions and concerns.
+  - Any reply that mentions a reaction or concern alerts staff and pauses automated messages for that client.
+  - An activity log per client so staff can see the full history at a glance.
+
+tools: [n8n, OpenAI API, Google Sheets, Gmail, Slack]
+technicalSkills: [Event driven workflows, Timed sequences, Reply classification, Escalation rules, Activity logging]
+
+validationNote: Built as a demonstration with sample appointments and sample replies. The workflow is designed to handle each of these cases.
+validation:
+  - A completed treatment starts aftercare and a scheduled check in.
+  - A missed appointment receives a rebooking message.
+  - A reply asking to rebook is routed to the booking step.
+  - A reply describing a concern alerts staff and stops automated messages.
+  - A client who opts out receives no further messages.
+
+designDecisions:
+  - Anything that sounds like a medical concern goes to a person. The system never gives medical advice.
+  - An opt out stops every sequence for that client, immediately.
+
+limitations:
+  - Message timing has to be set per treatment type with input from the clinic.
+  - Message wording needs approval from the business before going live.
+
+futureImprovements:
+  - A review request after positive check ins.
+  - A simple weekly view of clients who have not rebooked.

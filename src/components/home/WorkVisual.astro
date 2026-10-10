@@ -1,0 +1,132 @@
+---
+/** Decorative, illustrative compositions so each project card has its own visual identity. */
+interface Props {
+  visual: 'chat' | 'calendar' | 'inbox' | 'timeline' | 'pipeline';
+  accent: 'lime' | 'orange';
+}
+const { visual, accent } = Astro.props;
+const accentBg = accent === 'lime' ? 'bg-lime' : 'bg-orange';
+const accentText = accent === 'lime' ? 'text-lime' : 'text-orange';
+const accentBorder = accent === 'lime' ? 'border-lime' : 'border-orange';
+
+const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const taken = new Set([1, 4, 8, 9, 15, 18, 22, 23, 26]);
+const booked = 12;
+---
+
+<div class="relative h-full w-full select-none" aria-hidden="true">
+  {
+    visual === 'chat' && (
+      <div class="flex h-full flex-col justify-center gap-3 p-5 sm:p-8">
+        <div class="max-w-[78%] self-start rounded-2xl rounded-bl-sm bg-ink-3 px-4 py-3 text-sm text-paper/90">
+          Hi, can I order 2 large pizzas and a salad for delivery to my office?
+        </div>
+        <div class={`max-w-[78%] self-end rounded-md border ${accentBorder} bg-ink px-4 py-3 font-mono text-[0.7rem] leading-relaxed text-paper/80`}>
+          <span class={accentText}>intent</span>: "new_order"
+          <br />
+          <span class={accentText}>items</span>: 2 × large pizza, 1 × salad
+          <br />
+          <span class={accentText}>missing</span>: delivery time
+        </div>
+        <div class={`max-w-[78%] self-start rounded-2xl rounded-bl-sm ${accentBg} px-4 py-3 text-sm text-ink`}>
+          Got it. What time should we deliver?
+        </div>
+      </div>
+    )
+  }
+
+  {
+    visual === 'calendar' && (
+      <div class="flex h-full flex-col justify-center p-5 sm:p-8">
+        <div class="mb-3 flex items-center justify-between">
+          <span class="label text-paper/80">Availability</span>
+          <span class={`label ${accentText}`}>slot confirmed</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1.5">
+          {days.map((d) => (
+            <span class="pb-1 text-center font-mono text-[0.65rem] text-mute">{d}</span>
+          ))}
+          {Array.from({ length: 28 }, (_, i) => (
+            <span
+              class:list={[
+                'aspect-square rounded-[3px] border',
+                i === booked ? `${accentBg} ${accentBorder}` : taken.has(i) ? 'border-line bg-ink-3' : 'border-line',
+              ]}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    visual === 'inbox' && (
+      <div class="flex h-full flex-col justify-center gap-2 p-5 sm:p-8">
+        {[
+          { from: 'Sales enquiry', tag: 'lead', hot: true },
+          { from: 'Invoice #2291', tag: 'finance', hot: false },
+          { from: 'Weekly newsletter', tag: 'skipped', hot: false, dim: true },
+          { from: 'Order not received', tag: 'support', hot: true },
+          { from: 'Partnership idea', tag: 'review', hot: false },
+        ].map((row) => (
+          <div class:list={['flex items-center gap-3 rounded-sm border border-line bg-ink px-3 py-2.5', row.dim && 'opacity-40']}>
+            <span class:list={['h-2 w-2 shrink-0 rounded-full', row.hot ? accentBg : 'bg-paper/30']} />
+            <span class="flex-1 truncate text-sm text-paper/85">{row.from}</span>
+            <span class:list={['label !text-[0.6rem]', row.hot ? accentText : 'text-mute']}>{row.tag}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  {
+    visual === 'timeline' && (
+      <div class="flex h-full flex-col justify-center gap-8 p-5 sm:p-8">
+        <div>
+          <span class="label text-paper/80">Completed visit</span>
+          <div class="relative mt-4 flex justify-between">
+            <span class="absolute inset-x-0 top-[5px] h-px bg-line" />
+            {['Visit', 'Aftercare', 'Check in', 'Rebook'].map((step, i) => (
+              <span class="relative flex flex-col items-center gap-2">
+                <span class:list={['h-[11px] w-[11px] rounded-full border-2', i === 3 ? `${accentBg} ${accentBorder}` : 'border-paper/70 bg-ink']} />
+                <span class="font-mono text-[0.62rem] text-paper/75">{step}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <span class="label text-paper/80">Missed visit</span>
+          <div class="relative mt-4 flex justify-between">
+            <span class="absolute inset-x-0 top-[5px] h-px border-t border-dashed border-line" />
+            {['Missed', 'Rebook offer', 'Staff alert'].map((step, i) => (
+              <span class="relative flex flex-col items-center gap-2">
+                <span class:list={['h-[11px] w-[11px] rounded-full border-2', i === 2 ? 'border-lime bg-lime' : 'border-paper/70 bg-ink']} />
+                <span class="font-mono text-[0.62rem] text-paper/75">{step}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    visual === 'pipeline' && (
+      <div class="flex h-full flex-col justify-center gap-2.5 p-5 sm:p-8">
+        {[
+          { label: 'Collected', w: '100%' },
+          { label: 'Enriched', w: '82%' },
+          { label: 'Deduplicated', w: '64%' },
+          { label: 'Good fit, with evidence', w: '42%', hot: true },
+        ].map((row) => (
+          <div
+            class:list={['flex h-10 items-center rounded-sm px-3', row.hot ? `${accentBg} text-ink` : 'border border-line bg-ink text-paper/85']}
+            style={`width:${row.w}`}
+          >
+            <span class="truncate font-mono text-[0.7rem]">{row.label}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+</div>

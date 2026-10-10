@@ -1,0 +1,107 @@
+---
+/** INPUT → AI → LOGIC → SYSTEM → ACTION motif with a signal travelling along the line. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const nodes = [
+  { label: 'Input', optional: false },
+  { label: 'AI', optional: true },
+  { label: 'Logic', optional: false },
+  { label: 'System', optional: false },
+  { label: 'Action', optional: false },
+];
+---
+
+<figure class:list={['system-flow', className]}>
+  <div class="relative">
+  <span class="flow-line" aria-hidden="true"><span class="flow-pulse"></span></span>
+  <ol class="relative grid grid-cols-5 gap-1.5 sm:gap-3" aria-label="How a workflow moves: input, AI, logic, system, action">
+    {
+      nodes.map((node, i) => (
+        <li class="relative z-10 flex flex-col items-center gap-2">
+          <span
+            class:list={[
+              'flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-md border bg-ink font-mono text-[0.65rem] font-semibold sm:text-xs',
+              i === 0 && 'border-lime text-lime',
+              i === 4 && 'border-orange text-orange',
+              node.optional && 'border-dashed border-paper/50 text-paper',
+              i > 0 && i < 4 && !node.optional && 'border-line text-paper',
+            ]}
+            style={`--i:${i}`}
+            data-flow-node
+          >
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <span class="label !text-[0.6rem] text-paper sm:!text-[0.68rem]">
+            {node.label}
+            {node.optional && <span class="text-lime">*</span>}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  </div>
+  <figcaption class="mt-4 font-mono text-[0.68rem] leading-relaxed text-mute">
+    <span class="text-lime">*</span> AI is added only where it improves a decision. Plenty of good workflows run on clear rules alone.
+  </figcaption>
+</figure>
+
+<style>
+  .flow-line {
+    position: absolute;
+    top: 1.375rem;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
+  @media (min-width: 40rem) {
+    .flow-line {
+      top: 1.75rem;
+    }
+  }
+
+  .flow-pulse {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 22%;
+    background: linear-gradient(90deg, transparent, var(--color-lime), transparent);
+    transform: translateX(-100%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow-pulse {
+      animation: pulse-travel 3.2s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+    }
+
+    [data-flow-node] {
+      animation: node-ping 3.2s ease infinite;
+      animation-delay: calc(var(--i) * 0.55s);
+    }
+  }
+
+  @keyframes pulse-travel {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(460%);
+    }
+  }
+
+  @keyframes node-ping {
+    0%,
+    70%,
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+    8% {
+      box-shadow: 0 0 0 4px rgb(197 244 103 / 0.18);
+    }
+  }
+</style>

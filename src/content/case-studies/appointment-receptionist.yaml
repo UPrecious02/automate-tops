@@ -1,0 +1,67 @@
+order: 2
+title: AI Appointment Receptionist
+category: Customer communication
+summary: Answers booking enquiries, checks real calendar availability, books the confirmed slot and hands tricky requests to staff.
+seoDescription: An n8n appointment workflow by John Eyitope that understands booking requests, checks calendar availability and escalates cancellations to staff.
+status: Demonstration
+accent: orange
+visual: calendar
+
+problem: >
+  Service businesses lose bookings when enquiries arrive while staff are busy or the
+  business is closed. Agreeing a time takes several messages, pulls staff away from
+  the customers in front of them, and double bookings happen when the conversation and
+  the calendar drift out of sync.
+
+solution: >
+  The workflow reads each enquiry, identifies the service and the preferred time,
+  checks the calendar for open slots and offers real options. A booking is created only
+  after the customer confirms a specific slot. Cancellations, reschedules and anything
+  sensitive are passed to staff with a short summary.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: Enquiry arrives
+    description: A new booking message reaches the workflow through a webhook.
+  - stage: AI
+    title: Understand the request
+    description: The model identifies the service and turns phrases like next Tuesday afternoon into a date range.
+  - stage: LOGIC
+    title: Availability rules
+    description: Business hours, service length and buffers between appointments decide which slots are valid.
+  - stage: SYSTEM
+    title: Calendar
+    description: Free slots are read from the calendar, and the event is written only after confirmation.
+  - stage: ACTION
+    title: Confirm or hand off
+    description: The customer receives options or a confirmation. Anything outside the rules goes to staff.
+
+implementation:
+  - Date and time parsing that converts natural phrases into a concrete search window.
+  - Free slot calculation that respects service duration and the buffer between appointments.
+  - A booking is written only after the customer confirms one specific slot.
+  - Confirmation message and calendar event are created in the same run so they never disagree.
+  - Handoff branch for cancellations, reschedules and sensitive questions.
+
+tools: [n8n, OpenAI API, Google Calendar, Webhooks, Gmail]
+technicalSkills: [Natural language date parsing, Availability logic, Calendar API integration, Conversation state handling, Escalation design]
+
+validationNote: Built as a demonstration with a sample calendar and sample enquiries. The workflow is designed to handle each of these cases.
+validation:
+  - A clear booking request receives available options and a confirmation.
+  - A vague time preference is narrowed down with a follow up question.
+  - A requested slot that is already taken returns the nearest open alternatives.
+  - A request outside business hours is offered valid times instead.
+  - A cancellation is handed to staff instead of being processed automatically.
+
+designDecisions:
+  - The model never decides availability. The calendar is the single source of truth.
+  - Bookings need explicit confirmation, which prevents accidental appointments.
+
+limitations:
+  - Designed around one calendar per service. Scheduling across several staff members needs extra rules.
+  - Time zone handling assumes the business and its customers share one time zone.
+
+futureImprovements:
+  - Send reminder messages before each appointment.
+  - Support several staff calendars with individual availability.

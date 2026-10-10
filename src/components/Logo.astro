@@ -1,0 +1,38 @@
+---
+/**
+ * JE monogram: the J and E share one connector line, like nodes on a workflow canvas.
+ * Lime port = trigger, orange node = action.
+ */
+interface Props {
+  tone?: 'light' | 'dark';
+  showWordmark?: boolean;
+  size?: number;
+  class?: string;
+}
+
+const { tone = 'light', showWordmark = true, size = 36, class: className } = Astro.props;
+const stroke = tone === 'light' ? '#F5F1E8' : '#101010';
+---
+
+<span class:list={['inline-flex items-center gap-3', className]}>
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false">
+    <path
+      d="M8 9H40M20 9V30.5C20 35.2 16.2 39 11.5 39H8M28 9V39H40M28 24H35"
+      stroke={stroke}
+      stroke-width="4.5"
+      stroke-linecap="square"></path>
+    <circle cx="7" cy="9" r="5" fill="#C5F467"></circle>
+    <circle cx="7" cy="9" r="2.2" fill="#101010"></circle>
+    <circle cx="38" cy="24" r="3.5" fill="#FF784F"></circle>
+  </svg>
+  {
+    showWordmark && (
+      <span class="flex flex-col leading-none">
+        <span class="font-mono text-[0.95rem] font-semibold tracking-tight lowercase">john eyitope</span>
+        <span class:list={['label mt-1 !text-[0.6rem]', tone === 'light' ? 'text-mute' : 'text-mute-dark']}>
+          automation systems
+        </span>
+      </span>
+    )
+  }
+</span>

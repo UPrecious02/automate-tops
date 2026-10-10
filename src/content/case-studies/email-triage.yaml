@@ -1,0 +1,66 @@
+order: 3
+title: Email Triage & Follow Up
+category: Business process automation
+summary: Sorts a shared inbox by what each email needs, extracts the key details and creates the next task, so nothing depends on someone remembering.
+seoDescription: John Eyitope's n8n email triage workflow classifies messages, extracts structured details, drafts replies for review and flags threads waiting on a response.
+status: Demonstration
+accent: lime
+visual: inbox
+
+problem: >
+  A shared inbox mixes enquiries, invoices, support requests and noise. Someone has to
+  read everything, decide who should handle it and copy details into other tools. Emails
+  that need a reply sit untouched because nobody clearly owns them.
+
+solution: >
+  New emails are filtered, classified by category and urgency, and turned into a
+  structured record. Each category follows its own route: create a task, save a draft
+  reply for review, log the details or alert a person. Anything the system is unsure
+  about goes to a review queue instead of being forced into the wrong category.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: New email
+    description: The inbox trigger picks up new messages and skips automated senders.
+  - stage: AI
+    title: Classify and extract
+    description: Category, urgency, sender, request and deadline are returned as one JSON record.
+  - stage: LOGIC
+    title: Confidence and rules
+    description: Low confidence results go to review. Everything else follows its category route.
+  - stage: SYSTEM
+    title: Tasks and records
+    description: Details are logged to a sheet and tasks are created for the right person.
+  - stage: ACTION
+    title: Draft, notify, follow up
+    description: Replies are saved as drafts, the team is notified, and silent threads are flagged later.
+
+implementation:
+  - Rule based filters remove newsletters and automated senders before any AI call is made.
+  - Classification prompt with fixed categories and a required confidence value.
+  - Extraction of sender, company, request and deadline into one consistent JSON shape.
+  - Draft replies are saved for a person to approve and are never sent automatically.
+  - A scheduled check flags threads that still have no reply after a set period.
+
+tools: [n8n, OpenAI API, Gmail, Google Sheets, Slack]
+technicalSkills: [Text classification, Structured extraction, Confidence based routing, Scheduled workflows, Human in the loop design]
+
+validationNote: Built as a demonstration with sample emails. The workflow is designed to handle each of these cases.
+validation:
+  - A clear sales enquiry is logged, assigned and given a draft reply.
+  - An invoice email is recorded with its sender and due date.
+  - An ambiguous email is sent to the review queue.
+  - A newsletter is filtered out before reaching the AI step.
+  - A thread with no reply is flagged on the next scheduled check.
+
+designDecisions:
+  - Cheap rule based filtering runs first, so the AI step only sees emails that need judgement.
+  - Replies are drafted, not sent, so a person always controls what leaves the business.
+
+limitations:
+  - Categories are fixed per business and need reviewing as the inbox changes over time.
+  - Long email threads are summarised from the latest message, so older context can be missed.
+
+futureImprovements:
+  - Category specific reply templates written with the team.
+  - A weekly summary of volume by category for the business owner.

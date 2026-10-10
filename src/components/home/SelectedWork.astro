@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import WorkVisual from './WorkVisual.astro';
+
+const studies = (await getCollection('caseStudies')).sort((a, b) => a.data.order - b.data.order);
+
+// Asymmetric editorial grid. Pattern repeats if more case studies are added.
+const layouts = [
+  { span: 'lg:col-span-7', wide: false },
+  { span: 'lg:col-span-5', wide: false },
+  { span: 'lg:col-span-12', wide: true },
+  { span: 'lg:col-span-5', wide: false },
+  { span: 'lg:col-span-7', wide: false },
+];
+---
+
+<section id="work" class="bg-ink" aria-labelledby="work-title">
+  <div class="container-x section-y">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div data-reveal>
+        <p class="label text-lime">Selected work</p>
+        <h2 id="work-title" class="display display-lg mt-4">
+          Five systems,<br />built end to end.
+        </h2>
+      </div>
+      <p class="max-w-sm leading-relaxed text-mute md:text-right" data-reveal style="--reveal-delay:100ms">
+        Each project opens a full case study: the problem, the architecture, the important decisions and how it was
+        checked.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-4 md:mt-20 md:grid-cols-2 lg:grid-cols-12 lg:gap-5">
+      {
+        studies.map((study, i) => {
+          const layout = layouts[i % layouts.length];
+          const { data } = study;
+          return (
+            <li
+              class:list={[layout.span, layout.wide && 'md:col-span-2']}
+              data-reveal
+              style={`--reveal-delay:${(i % 2) * 90}ms`}
+            >
+              <article
+                class:list={[
+                  'group relative flex h-full flex-col overflow-hidden rounded-sm border border-line bg-ink-2 transition-colors duration-300 hover:border-paper/40',
+                  layout.wide && 'lg:flex-row-reverse',
+                ]}
+              >
+                <div
+                  class:list={[
+                    'relative min-h-[17rem] border-b border-line bg-ink sm:min-h-[19rem]',
+                    layout.wide && 'lg:w-[52%] lg:border-b-0 lg:border-l',
+                  ]}
+                >
+                  <div class="grid-bg absolute inset-0 opacity-60" aria-hidden="true" />
+                  <div class="relative h-full">
+                    <WorkVisual visual={data.visual} accent={data.accent} />
+                  </div>
+                </div>
+
+                <div class:list={['flex flex-1 flex-col p-6 sm:p-8', layout.wide && 'lg:justify-between lg:p-10']}>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="font-mono text-xs text-mute">0{data.order}</span>
+                    <span class:list={['label', data.accent === 'lime' ? 'text-lime' : 'text-orange']}>{data.category}</span>
+                  </div>
+                  <h3 class:list={['mt-4 font-display font-extrabold uppercase leading-[0.95] [font-stretch:72%]', layout.wide ? 'text-[2rem] sm:text-[2.6rem] lg:text-[3.4rem]' : 'text-[2rem] sm:text-[2.4rem]']}>
+                    <a href={`/case-studies/${study.id}`} class="after:absolute after:inset-0 focus-visible:outline-none">
+                      {data.title}
+                    </a>
+                  </h3>
+                  <p class="mt-4 max-w-xl leading-relaxed text-paper/75">{data.summary}</p>
+                  <div class="mt-8 flex items-center justify-between gap-4 pt-2 lg:mt-auto">
+                    <ul class="flex flex-wrap gap-2" aria-label="Tools">
+                      {data.tools.slice(0, 3).map((tool) => (
+                        <li class="chip text-paper/60">{tool}</li>
+                      ))}
+                    </ul>
+                    <span
+                      class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line transition-colors duration-300 group-hover:border-lime group-hover:bg-lime group-hover:text-ink"
+                      aria-hidden="true"
+                    >
+                      <Icon name="arrow-up-right" />
+                    </span>
+                  </div>
+                </div>
+                <span class="pointer-events-none absolute inset-0 rounded-sm ring-lime group-has-[a:focus-visible]:ring-2" aria-hidden="true" />
+              </article>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>

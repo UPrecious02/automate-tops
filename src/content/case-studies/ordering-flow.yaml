@@ -1,0 +1,69 @@
+order: 1
+title: Conversational Ordering & Support
+category: Customer communication
+summary: A chat based ordering and support flow that understands what a customer wants, checks real order data and hands anything unusual to a person.
+seoDescription: How John Eyitope designed a conversational ordering and support workflow in n8n that classifies requests, validates order details and escalates exceptions.
+status: Demonstration
+accent: lime
+visual: chat
+
+problem: >
+  Businesses that take orders over chat end up with someone reading every message,
+  copying details into a spreadsheet and answering the same order status questions
+  again and again. Messages that arrive after hours wait until morning, and details
+  get lost between the conversation and the order record.
+
+solution: >
+  Every incoming message enters one workflow. An AI step works out what the customer
+  wants and pulls the order details into a structured record. Workflow logic checks
+  that nothing required is missing before any order is written, replies with a
+  confirmation or status update, and sends complaints or unclear requests to a person
+  with the full context attached.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: Message received
+    description: A webhook receives the customer message, sender and channel.
+  - stage: AI
+    title: Intent and details
+    description: The model classifies the request and extracts items, quantities and delivery details as JSON.
+  - stage: LOGIC
+    title: Validate and route
+    description: A switch routes by intent. Required fields are checked before anything is saved.
+  - stage: SYSTEM
+    title: Order data
+    description: The order is created or looked up in the order sheet.
+  - stage: ACTION
+    title: Reply or escalate
+    description: The customer gets a confirmation or status reply. Exceptions go to staff with context.
+
+implementation:
+  - Webhook trigger with a normalisation step so messages from different channels arrive in one consistent shape.
+  - Structured output prompt that returns intent, line items and a confidence flag as JSON.
+  - Switch node with separate paths for new orders, status requests, product questions and complaints.
+  - Missing field check that asks the customer for the detail instead of guessing it.
+  - Escalation branch that posts a short conversation summary to a staff channel.
+
+tools: [n8n, OpenAI API, Webhooks, Google Sheets, Slack]
+technicalSkills: [Intent classification, Structured data extraction, Conditional routing, API integration, Exception handling]
+
+validationNote: Built as a demonstration with sample conversations. The workflow is designed to handle each of these cases.
+validation:
+  - A complete order message becomes a saved order and a confirmation reply.
+  - An order missing delivery details triggers a question back to the customer.
+  - An order status request returns the current status from the order data.
+  - A complaint skips automation and goes straight to a person.
+  - A message the system cannot classify is escalated rather than answered.
+
+designDecisions:
+  - The AI only classifies and extracts. Prices, stock and totals always come from the data source, never from the model.
+  - Required fields are validated in workflow logic, not left to the prompt.
+  - Complaints are never handled automatically, because tone matters more than speed there.
+
+limitations:
+  - It handles the order types it was configured for. Unusual requests are routed to a person by design.
+  - Reply accuracy depends on the product and order data being kept current.
+
+futureImprovements:
+  - Add a payment link step once an order is confirmed.
+  - Add order history lookup for returning customers.

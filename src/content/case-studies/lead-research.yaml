@@ -1,0 +1,66 @@
+order: 5
+title: AI Lead Research & Prospecting
+category: Research and information
+summary: Collects prospects from defined sources, enriches and deduplicates them, and delivers an organised list with the evidence behind every decision.
+seoDescription: An n8n lead research workflow by John Eyitope that collects, enriches, deduplicates and assesses prospects, with evidence for every fit decision.
+status: Demonstration
+accent: lime
+visual: pipeline
+
+problem: >
+  Manual prospecting means hours of searching websites, copying details into a
+  spreadsheet and checking whether a company is already on the list. The result is
+  inconsistent data, duplicates and no record of why a lead was chosen in the first place.
+
+solution: >
+  The workflow gathers companies from defined sources and visits each website to
+  collect public business information. An AI step summarises what the company does and
+  checks it against the target profile, quoting the evidence it used. Duplicates are
+  removed and a clean, organised list is written to a spreadsheet or CRM.
+
+workflowSteps:
+  - stage: TRIGGER
+    title: Search criteria
+    description: A run starts from criteria entered in a form or sheet.
+  - stage: SYSTEM
+    title: Collect sources
+    description: HTTP requests fetch public pages with rate limits and timeouts.
+  - stage: AI
+    title: Enrich and assess
+    description: Each company is summarised and checked against the profile, with quoted evidence.
+  - stage: LOGIC
+    title: Deduplicate and filter
+    description: Records are matched by domain, and weak fits are separated out.
+  - stage: ACTION
+    title: Organised output
+    description: Clean records are written to the CRM or spreadsheet, ready for outreach.
+
+implementation:
+  - Criteria come from a form or sheet, so a non technical person can start a run.
+  - HTTP requests with rate limiting and timeouts so slow sites do not stall the run.
+  - Fit assessment that must quote the evidence it used, so every decision can be checked.
+  - Deduplication by normalised domain before anything is written.
+  - Batch processing with error handling, so one failed site does not stop the whole run.
+
+tools: [n8n, OpenAI API, HTTP Request, Google Sheets, HubSpot]
+technicalSkills: [Web data collection, Data enrichment, Deduplication, Evidence based classification, Batch processing]
+
+validationNote: Built as a demonstration with sample search criteria. The workflow is designed to handle each of these cases.
+validation:
+  - A company that matches the profile is saved with its supporting evidence.
+  - A company outside the profile is separated with the reason recorded.
+  - A duplicate domain is detected and skipped.
+  - A website that fails to load is logged without stopping the run.
+  - A page with too little information is marked as low confidence.
+
+designDecisions:
+  - The model has to cite evidence, which makes weak matches easy to spot and correct.
+  - Only public business information is collected.
+
+limitations:
+  - Quality depends on the source data. Companies with thin websites receive lower confidence.
+  - Sources must be reviewed against each site's terms before regular use.
+
+futureImprovements:
+  - Scheduled runs that only add new or changed companies.
+  - A short personalised opening line for outreach, saved as a draft for review.

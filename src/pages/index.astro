@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Capabilities from '../components/home/Capabilities.astro';
+import SelectedWork from '../components/home/SelectedWork.astro';
+import Approach from '../components/home/Approach.astro';
+import TechStack from '../components/home/TechStack.astro';
+import About from '../components/home/About.astro';
+import Faq from '../components/home/Faq.astro';
+import Contact from '../components/home/Contact.astro';
+import { site } from '../data/site';
+---
+
+<Base title={`${site.name} | ${site.title}`} description={site.description}>
+  <Hero />
+  <Capabilities />
+  <SelectedWork />
+  <Approach />
+  <TechStack />
+  <About />
+  <Faq />
+  <Contact />
+</Base>

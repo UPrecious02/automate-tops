@@ -1,0 +1,57 @@
+---
+/** Readable architecture diagram: a row on large screens, a vertical flow on phones and tablets. */
+interface Props {
+  steps: { stage: 'TRIGGER' | 'AI' | 'LOGIC' | 'SYSTEM' | 'ACTION'; title: string; description: string }[];
+}
+const { steps } = Astro.props;
+
+const stageStyle: Record<Props['steps'][number]['stage'], string> = {
+  TRIGGER: 'border-lime text-lime',
+  AI: 'border-dashed border-paper/60 text-paper',
+  LOGIC: 'border-paper/30 text-paper',
+  SYSTEM: 'border-paper/30 text-paper',
+  ACTION: 'border-orange text-orange',
+};
+---
+
+<figure>
+  <ol class="grid gap-0 lg:gap-3" style={`--cols:${steps.length}`}>
+    {
+      steps.map((step, i) => (
+        <li class="relative flex gap-4 lg:flex-col lg:gap-0">
+          <div class="flex flex-col items-center lg:flex-row lg:items-center">
+            <span
+              class:list={[
+                'flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-ink font-mono text-xs font-semibold',
+                stageStyle[step.stage],
+              ]}
+            >
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            {i < steps.length - 1 && (
+              <span class="my-1 w-px flex-1 bg-line lg:mx-3 lg:my-0 lg:h-px lg:w-auto" aria-hidden="true" />
+            )}
+          </div>
+          <div class="pb-8 lg:pt-5 lg:pr-2 lg:pb-0">
+            <p class:list={['label !text-[0.65rem]', step.stage === 'TRIGGER' ? 'text-lime' : step.stage === 'ACTION' ? 'text-orange' : 'text-mute']}>
+              {step.stage}
+            </p>
+            <h3 class="mt-2 font-display text-xl leading-tight font-bold [font-stretch:80%]">{step.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-paper/70">{step.description}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption class="mt-6 border-t border-line pt-4 font-mono text-xs text-mute">
+    Trigger → processing → decision → action. Dashed node = AI step.
+  </figcaption>
+</figure>
+
+<style>
+  @media (min-width: 64rem) {
+    ol {
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    }
+  }
+</style>

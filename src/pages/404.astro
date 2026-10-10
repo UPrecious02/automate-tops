@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found | John Eyitope" description="This page could not be found." noindex>
+  <section class="grid-bg flex min-h-[70vh] items-center">
+    <div class="container-x py-24">
+      <p class="label text-orange">Error 404 · route not found</p>
+      <h1 class="display display-xl mt-4">Dead end.</h1>
+      <p class="lead mt-6 max-w-xl text-paper/80">
+        This page does not exist, or it has moved. Every good workflow has a fallback path, so here is this one.
+      </p>
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+        <a href="/" class="btn btn-lime">Go to the homepage <Icon name="arrow-right" /></a>
+        <a href="/#work" class="btn btn-ghost">See selected work</a>
+      </div>
+    </div>
+  </section>
+</Base>
